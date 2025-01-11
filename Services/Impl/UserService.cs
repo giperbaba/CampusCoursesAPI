@@ -108,6 +108,11 @@ public class UserService: IUserService
         var userProfile = Mapper.MapUserEntityToUserProfileModel(user);
         return userProfile;
     }
+    
+    public bool IsUserAdmin(string email)
+    {
+        return GetUserByEmail(email).IsAdmin;
+    }
 
     
     private User GetUserByEmail(string email)

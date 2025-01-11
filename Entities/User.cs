@@ -8,12 +8,13 @@ namespace repassAPI.Entities;
 [Table("users")]
 public class User
 {
-    public User(string fullName, DateTime birthDate, string email, string password)
+    public User(string fullName, DateTime birthDate, string email, string password, bool isAdmin = false)
     {
         FullName = fullName;
         BirthDate = birthDate;
         Email = email;
         Password = password;
+        IsAdmin = isAdmin;
     }
 
     [Key]
@@ -40,4 +41,9 @@ public class User
     [Required]
     [StringLength(255, ErrorMessage = Constants.ErrorMessages.IncorrectPasswordFormat, MinimumLength = 6)]
     public string Password { get; init; }
+    
+    [Column("isAdmin")]
+    [Required]
+    public bool IsAdmin { get; set; }
+    
 }

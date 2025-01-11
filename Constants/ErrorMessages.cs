@@ -24,6 +24,10 @@ public static class ErrorMessages
     
     //Not found errors
     public const string UserNotFound = "User with this email not found";
+    public const string GroupNotFound = "Group not found";
+    
+    //Forbidden errors
+    public const string AccessDenied = "You must be admin to create, edit or delete group";
     
     //Success
     public const string Logout = "Logged Out";

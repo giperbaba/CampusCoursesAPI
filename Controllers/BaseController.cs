@@ -1,9 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
+using repassAPI.Exceptions;
+using repassAPI.Services.Interfaces;
 
 namespace repassAPI.Controllers;
 
-public class BaseController: ControllerBase
+public class BaseController(IUserService _userService) : ControllerBase
 {
+    protected async Task EnsureAdminRights(string email)
+    {
+        var isAdmin = _userService.IsUserAdmin(email);
+        if (!isAdmin)
+        {
+            throw new AccessDeniedException(Constants.ErrorMessages.AccessDenied);
+        }
+    }
     protected string GetUserEmail(string claimType)
     {
         var email = HttpContext.User.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;

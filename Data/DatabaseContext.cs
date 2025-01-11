@@ -13,4 +13,6 @@ public class DatabaseContext: DbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     public DbSet<AccessToken> BannedTokens { get; set; } = null!;
+    
+    public DbSet<CampusGroup> CampusGroups { get; set; } = null!;
 }

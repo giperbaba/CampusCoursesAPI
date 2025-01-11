@@ -12,7 +12,7 @@ public class AccountController: BaseController
 {
     private readonly IUserService _userService;
     
-    public AccountController(IUserService userService)
+    public AccountController(IUserService userService): base(userService)
     {
         _userService = userService;
     }

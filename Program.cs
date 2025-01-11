@@ -37,6 +37,7 @@ builder.Services.AddScoped<Tokens>();
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 {

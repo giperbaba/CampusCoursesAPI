@@ -11,7 +11,7 @@ public class TokenController: BaseController
 {
     private readonly IUserService _userService;
     
-    public TokenController(IUserService userService)
+    public TokenController(IUserService userService): base(userService)
     {
         _userService = userService;
     }
