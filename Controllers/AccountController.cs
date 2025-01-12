@@ -9,43 +9,43 @@ namespace repassAPI.Controllers;
 [ApiController]
 public class AccountController: BaseController
 {
-    private readonly IUserService _userService;
+    private readonly IAccountService _accountService;
     
-    public AccountController(IUserService userService, IServiceProvider serviceProvider) : base(serviceProvider)
+    public AccountController(IAccountService accountService, IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        _userService = userService;
+        _accountService = accountService;
     }
 
     [HttpPost("registration")]
     public async Task<IActionResult> Regist(UserRegisterRequest input)
     {
-        return Ok(await _userService.Register(input));
+        return Ok(await _accountService.Register(input));
     }
     
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserLoginRequest input)
     {
-        return Ok(await _userService.Login(input));
+        return Ok(await _accountService.Login(input));
     }
 
     [Authorize]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        return Ok(await _userService.Logout(GetUserEmail(ClaimTypes.Name), GetAccessToken()));
+        return Ok(await _accountService.Logout(GetUserData(ClaimTypes.Email), GetAccessToken()));
     }
 
     [Authorize]
     [HttpGet("profile")]
     public async Task<IActionResult> GetProfile()
     {
-        return Ok(await _userService.GetProfile(GetUserEmail(ClaimTypes.Name), GetAccessToken()));
+        return Ok(await _accountService.GetProfile(GetUserData(ClaimTypes.Email), GetAccessToken()));
     }
 
     [Authorize]
     [HttpPut("profile")]
     public async Task<IActionResult> EditProfile(UserEditProfileRequest input)
     {
-        return Ok(await _userService.EditProfile(GetUserEmail(ClaimTypes.Name), input, GetAccessToken()));
+        return Ok(await _accountService.EditProfile(GetUserData(ClaimTypes.Email), input, GetAccessToken()));
     }
 }

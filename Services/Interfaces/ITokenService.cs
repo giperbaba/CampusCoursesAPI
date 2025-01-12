@@ -4,8 +4,8 @@ namespace repassAPI.Services.Interfaces;
 
 public interface ITokenService
 {
-    void SaveRefreshToken(User user, string refreshToken);
-    void RemoveTokens(User user,  string? accessToken);
-    Task CheckIsAccessTokenBanned(string token);
-    string GetEmailFromRefreshToken(string? refreshToken);
+    public void SaveRefreshToken(User user, string refreshToken);
+    public void RemoveTokens(User user,  string? accessToken);
+    public Task CheckIsAccessTokenBanned(string token);
+    public string GetEmailFromRefreshToken(string? refreshToken);
 }

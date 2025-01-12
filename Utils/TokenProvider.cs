@@ -32,7 +32,8 @@ public class TokenProvider
     private string CreateToken(User user, SecurityKey key, int expireMinutes)
     { 
         var claims = new List<Claim> {
-            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Id.ToString())
         };
 
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

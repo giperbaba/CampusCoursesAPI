@@ -6,12 +6,12 @@ namespace repassAPI.Controllers;
 
 public class BaseController : ControllerBase
 {
-    private readonly Lazy<IUserService> _userService;
+    private readonly Lazy<IAccountService> _userService;
 
     protected BaseController(IServiceProvider serviceProvider)
     {
         // Используем Lazy для отложенной загрузки зависимости
-        _userService = new Lazy<IUserService>(() => serviceProvider.GetService<IUserService>());
+        _userService = new Lazy<IAccountService>(() => serviceProvider.GetService<IAccountService>());
     }
 
     protected async Task EnsureAdminRights(string email)
@@ -22,13 +22,13 @@ public class BaseController : ControllerBase
             throw new AccessDeniedException(Constants.ErrorMessages.AccessDenied);
         }
     }
-    protected string GetUserEmail(string claimType)
+    protected string GetUserData(string claimType)
     {
-        var email = HttpContext.User.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
+        var data = HttpContext.User.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
 
-        if (email == null) throw new UnauthorizedAccessException();
+        if (data == null) throw new UnauthorizedAccessException();
 
-        return email;
+        return data;
     }
     
     protected string GetAccessToken()

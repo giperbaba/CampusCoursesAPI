@@ -8,16 +8,16 @@ namespace repassAPI.Controllers;
 [ApiController]
 public class TokenController: BaseController
 {
-    private readonly IUserService _userService;
+    private readonly IAccountService _accountService;
     
-    public TokenController(IUserService userService, IServiceProvider serviceProvider): base(serviceProvider)
+    public TokenController(IAccountService accountService, IServiceProvider serviceProvider): base(serviceProvider)
     {
-        _userService = userService;
+        _accountService = accountService;
     }
     
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(RefreshRequest refreshRequest)
     {
-        return Ok(await _userService.Refresh(refreshRequest));
+        return Ok(await _accountService.Refresh(refreshRequest));
     }
 }

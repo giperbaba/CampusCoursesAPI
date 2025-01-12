@@ -27,7 +27,7 @@ public class GroupController: BaseController
     [HttpPost("groups")]
     public async Task<IActionResult> CreateGroup(CampusGroupCreateRequest input)
     {
-        await EnsureAdminRights(GetUserEmail(ClaimTypes.Name));
+        await EnsureAdminRights(GetUserData(ClaimTypes.Email));
         return Ok(await _groupService.Create(input));
     }
     
@@ -35,7 +35,7 @@ public class GroupController: BaseController
     [HttpPut("groups/{id}")]
     public async Task<IActionResult> EditGroup(string id, CampusGroupEditRequest input)
     {
-        await EnsureAdminRights(GetUserEmail(ClaimTypes.Name));
+        await EnsureAdminRights(GetUserData(ClaimTypes.Email));
         return Ok(await _groupService.Edit(id, input));
     }
     
@@ -43,7 +43,7 @@ public class GroupController: BaseController
     [HttpDelete("groups/{id}")]
     public async Task<IActionResult> DeleteGroup(string id)
     {
-        await EnsureAdminRights(GetUserEmail(ClaimTypes.Name));
+        await EnsureAdminRights(GetUserData(ClaimTypes.Email));
         return Ok(await _groupService.Delete(id));
     }
     
@@ -53,5 +53,4 @@ public class GroupController: BaseController
     {
         return Ok(await _groupService.GetCourses(id));
     }
-    
 }

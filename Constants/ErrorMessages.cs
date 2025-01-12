@@ -30,7 +30,7 @@ public static class ErrorMessages
     public const string InvalidToken = "Invalid token";
     
     //Not found errors
-    public const string UserNotFound = "User with this email not found";
+    public const string UserNotFound = "User not found";
     public const string GroupNotFound = "Group not found";
     public const string CourseNotFound = "Course not found";
     

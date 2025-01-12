@@ -40,7 +40,9 @@ public class CourseService: ICourseService
         
         await CheckIsAlreadyStudent(teacherId, courseId);
         await CheckIsAlreadyTeacher(teacherId, courseId);
-        
+
+        await ChangeTeacherRole(teacherId);
+
         await _context.CourseTeachers.AddAsync(new CourseTeacher(courseId, teacherId, isMainTeacher));
         await _context.SaveChangesAsync();
     }
@@ -52,6 +54,8 @@ public class CourseService: ICourseService
 
         await CheckIsAlreadyStudent(studentId, courseId);
         await CheckIsAlreadyTeacher(studentId, courseId);
+        
+        await ChangeStudentRole(studentId);
         
         await _context.CourseStudents.AddAsync(new CourseStudent(courseId, studentId, studentStatus));
         await _context.SaveChangesAsync();
@@ -85,5 +89,25 @@ public class CourseService: ICourseService
             .AnyAsync(ct => ct.CourseId == courseId && ct.TeacherId == userId);
         if (isAlreadyTeacher)
             throw new ConflictException(ErrorMessages.AlreadyIsTeacher);
+    }
+
+    private async Task ChangeTeacherRole(Guid userId)
+    {
+        var userRole = await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == userId);
+        if (userRole != null)
+        {
+            userRole.IsTeacher = true;
+            _context.UserRoles.Update(userRole);
+        }
+    }
+
+    private async Task ChangeStudentRole(Guid userId)
+    {
+        var userRole = await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == userId);
+        if (userRole != null)
+        {
+            userRole.IsStudent = true;
+            _context.UserRoles.Update(userRole);
+        }
     }
 }

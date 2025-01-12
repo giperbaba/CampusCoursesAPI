@@ -36,9 +36,10 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 builder.Services.AddScoped<Tokens>();
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 {
