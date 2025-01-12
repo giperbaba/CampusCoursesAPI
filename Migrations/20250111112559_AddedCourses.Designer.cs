@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using repassAPI.Data;
@@ -11,9 +12,11 @@ using repassAPI.Data;
 namespace repassAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250111112559_AddedCourses")]
+    partial class AddedCourses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,63 +101,7 @@ namespace repassAPI.Migrations
 
                     b.HasIndex("CampusGroupId");
 
-                    b.ToTable("courses");
-                });
-
-            modelBuilder.Entity("repassAPI.Entities.CourseStudent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("course_id");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("student_status");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("student_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("course_student");
-                });
-
-            modelBuilder.Entity("repassAPI.Entities.CourseTeacher", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("course_id");
-
-                    b.Property<bool>("IsMainTeacher")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_main_teacher");
-
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("teacher_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("course_teacher");
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("repassAPI.Entities.RefreshToken", b =>
@@ -233,61 +180,9 @@ namespace repassAPI.Migrations
                     b.Navigation("CampusGroup");
                 });
 
-            modelBuilder.Entity("repassAPI.Entities.CourseStudent", b =>
-                {
-                    b.HasOne("repassAPI.Entities.Course", "Course")
-                        .WithMany("Students")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("repassAPI.Entities.User", "Student")
-                        .WithMany("StudingCourses")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("repassAPI.Entities.CourseTeacher", b =>
-                {
-                    b.HasOne("repassAPI.Entities.Course", "Course")
-                        .WithMany("Teachers")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("repassAPI.Entities.User", "Teacher")
-                        .WithMany("TeachingCourses")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Teacher");
-                });
-
             modelBuilder.Entity("repassAPI.Entities.CampusGroup", b =>
                 {
                     b.Navigation("Courses");
-                });
-
-            modelBuilder.Entity("repassAPI.Entities.Course", b =>
-                {
-                    b.Navigation("Students");
-
-                    b.Navigation("Teachers");
-                });
-
-            modelBuilder.Entity("repassAPI.Entities.User", b =>
-                {
-                    b.Navigation("StudingCourses");
-
-                    b.Navigation("TeachingCourses");
                 });
 #pragma warning restore 612, 618
         }

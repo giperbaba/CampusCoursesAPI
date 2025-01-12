@@ -34,7 +34,7 @@ public class User
     
     [Column("email")]
     [Required]
-    [EmailAddress]
+    [EmailAddress(ErrorMessage = Constants.ErrorMessages.IncorrectEmailFormat)]
     public string Email { get; init; }
     
     [Column("password")]
@@ -42,8 +42,11 @@ public class User
     [StringLength(255, ErrorMessage = Constants.ErrorMessages.IncorrectPasswordFormat, MinimumLength = 6)]
     public string Password { get; init; }
     
-    [Column("isAdmin")]
+    [Column("is_admin")]
     [Required]
     public bool IsAdmin { get; set; }
     
+    //навигационные свойства
+    public ICollection<CourseStudent> StudingCourses { get; set; } = new List<CourseStudent>();
+    public ICollection<CourseTeacher> TeachingCourses { get; set; } = new List<CourseTeacher>();
 }

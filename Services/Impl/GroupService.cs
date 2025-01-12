@@ -57,7 +57,19 @@ public class GroupService: IGroupService
         return Results.Ok();
     }
     
-    //public Task<IEnumerable<CampusCoursePreviewResponse>> GetCourses(string groupId);
+    public async Task<IEnumerable<CoursePreviewResponse>> GetCourses(string groupId)
+    {
+        var group = await _context.CampusGroups
+            .Include(g => g.Courses)
+            .FirstOrDefaultAsync(g => g.Id.ToString() == groupId);
+
+        if (group == null)
+        {
+            throw new NotFoundException(Constants.ErrorMessages.GroupNotFound);
+        }
+
+        return group.Courses.Select(Mapper.MapCourseEntityToCourseModel);
+    }
 
     private async Task<CampusGroup> GetGroupById(string id)
     {

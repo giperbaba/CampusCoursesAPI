@@ -6,12 +6,11 @@ using repassAPI.Services.Interfaces;
 namespace repassAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
 public class TokenController: BaseController
 {
     private readonly IUserService _userService;
     
-    public TokenController(IUserService userService): base(userService)
+    public TokenController(IUserService userService, IServiceProvider serviceProvider): base(serviceProvider)
     {
         _userService = userService;
     }

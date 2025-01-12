@@ -7,18 +7,17 @@ using repassAPI.Services.Interfaces;
 namespace repassAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 public class AccountController: BaseController
 {
     private readonly IUserService _userService;
     
-    public AccountController(IUserService userService): base(userService)
+    public AccountController(IUserService userService, IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _userService = userService;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(UserRegisterRequest input)
+    [HttpPost("registration")]
+    public async Task<IActionResult> Regist(UserRegisterRequest input)
     {
         return Ok(await _userService.Register(input));
     }

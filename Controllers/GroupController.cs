@@ -6,15 +6,14 @@ using repassAPI.Services.Interfaces;
 
 namespace repassAPI.Controllers;
 
+[ApiController]
 public class GroupController: BaseController
 {
     private readonly IGroupService _groupService;
-    private readonly IUserService _userService;
 
-    public GroupController(IGroupService groupService, IUserService userService) : base(userService)
+    public GroupController(IGroupService groupService, IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _groupService = groupService;
-        _userService = userService;
     }
 
     [Authorize]
@@ -48,11 +47,11 @@ public class GroupController: BaseController
         return Ok(await _groupService.Delete(id));
     }
     
-    /*[Authorize]
+    [Authorize]
     [HttpGet("groups/{id}")]
     public async Task<IActionResult> GetCourses(string id)
     {
         return Ok(await _groupService.GetCourses(id));
-    }*/
+    }
     
 }

@@ -8,13 +8,20 @@ public static class ErrorMessages
     public const string IncorrectConfirmPassword = "Passwords must be identical";
     public const string IncorrectDate = "Incorrect birthdate";
     
-    public const string InvalidDate = "User must be over 16 years old";
-    
     //Incorrect data format
     public const string IncorrectPhoneFormat = "Incorrect phone format";
     public const string IncorrectEmailFormat = "Incorrect email format";
     public const string IncorrectPasswordFormat = "Password must be longer than 6 characters and have at least one number";
 
+    //Invalid data
+    public const string InvalidDate = "User must be over 16 years old";
+    
+    public const string InvalidStartCoursesYear = "StartYear must be between 2000 and 2029.";
+    public const string InvalidStudentsAmount = "MaxStudentsCount must be between 1 and 200.";
+
+    public const string AlreadyIsTeacher = "User is already a teacher for this course.";
+    public const string AlreadyIsStudent = "User is already a student for this course.";
+    
     //Login failed errors
     public const string ConflictEmail = "Email is already registered";
     public const string InvalidPassword = "Invalid password";
@@ -25,6 +32,7 @@ public static class ErrorMessages
     //Not found errors
     public const string UserNotFound = "User with this email not found";
     public const string GroupNotFound = "Group not found";
+    public const string CourseNotFound = "Course not found";
     
     //Forbidden errors
     public const string AccessDenied = "You must be admin to create, edit or delete group";

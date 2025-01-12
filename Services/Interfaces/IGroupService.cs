@@ -9,5 +9,5 @@ public interface IGroupService
     public Task<CampusGroupResponse> Create(CampusGroupCreateRequest groupRequest);
     public Task<CampusGroupResponse> Edit(string groupId, CampusGroupEditRequest groupRequest);
     public Task<IResult> Delete(string groupId);
-    //public Task<IEnumerable<CampusCoursePreviewResponse>> GetCourses(string groupId);
+    public Task<IEnumerable<CoursePreviewResponse>> GetCourses(string groupId);
 }

@@ -74,7 +74,7 @@ public class UserService: IUserService
         var email = _tokenService.GetEmailFromRefreshToken(refreshRequest.RefreshToken);
         var user = await Task.Run(() => GetUserByEmail(email));
 
-        RemoveRefreshToken(user, refreshRequest);
+        RemoveRefreshTokenIfInvalid(user, refreshRequest);
         
         var newAccessToken = _tokenProvider.GenerateAccessToken(user);
         return new AccessTokenResponse(newAccessToken);
@@ -132,7 +132,7 @@ public class UserService: IUserService
         await _context.SaveChangesAsync();
     }
     
-    private void RemoveRefreshToken(User user, RefreshRequest request)
+    private void RemoveRefreshTokenIfInvalid(User user, RefreshRequest request)
     {
         if (!_tokenProvider.IsRefreshTokenValid(user, request.RefreshToken))
         {

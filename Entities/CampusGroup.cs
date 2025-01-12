@@ -15,4 +15,6 @@ public class CampusGroup(string name)
     [Required]
     [StringLength(255)]
     public string Name { get; set; } = name;
+    
+    public ICollection<Course> Courses { get; set; } = new List<Course>();
 }

@@ -16,7 +16,7 @@ public class UserRegisterRequest(
 
     [Required(ErrorMessage = ErrorMessages.RequiredField)]
     [DatetimeValidator(ErrorMessage = ErrorMessages.IncorrectDate)]
-    public DateTime BirthDate { get; } = birthdate; //TODO: регистрация от 14 лет
+    public DateTime BirthDate { get; } = birthdate; 
     
     [Required(ErrorMessage = ErrorMessages.RequiredField)]
     [MinLength(1)]

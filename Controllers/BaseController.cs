@@ -4,11 +4,19 @@ using repassAPI.Services.Interfaces;
 
 namespace repassAPI.Controllers;
 
-public class BaseController(IUserService _userService) : ControllerBase
+public class BaseController : ControllerBase
 {
+    private readonly Lazy<IUserService> _userService;
+
+    protected BaseController(IServiceProvider serviceProvider)
+    {
+        // Используем Lazy для отложенной загрузки зависимости
+        _userService = new Lazy<IUserService>(() => serviceProvider.GetService<IUserService>());
+    }
+
     protected async Task EnsureAdminRights(string email)
     {
-        var isAdmin = _userService.IsUserAdmin(email);
+        var isAdmin = _userService.Value.IsUserAdmin(email);
         if (!isAdmin)
         {
             throw new AccessDeniedException(Constants.ErrorMessages.AccessDenied);
