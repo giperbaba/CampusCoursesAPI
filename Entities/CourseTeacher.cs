@@ -6,11 +6,13 @@ namespace repassAPI.Entities;
 [Table("course_teacher")]
 public class CourseTeacher
 {
-    public CourseTeacher(Guid courseId, Guid teacherId, bool isMainTeacher)
+    public CourseTeacher(Guid courseId, Guid teacherId, bool isMainTeacher, string name, string email)
     {
         CourseId = courseId;
         TeacherId = teacherId;
         IsMainTeacher = isMainTeacher;
+        Name = name;
+        Email = email;
     }
 
     [Key]
@@ -26,6 +28,12 @@ public class CourseTeacher
     
     [Column("is_main_teacher")]
     public bool IsMainTeacher { get; set; }
+    
+    [Column("student_name")]
+    public string Name { get; set; }
+    
+    [Column("student_email")]
+    public string Email { get; set; }
 
     //навигационные свойства
     [ForeignKey("CourseId")]

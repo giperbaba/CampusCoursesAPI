@@ -6,20 +6,43 @@ namespace repassAPI.Controllers;
 
 public class BaseController : ControllerBase
 {
-    private readonly Lazy<IAccountService> _userService;
+    private readonly Lazy<IAccountService> _accountService;
+    private readonly Lazy<ICourseService> _courseService;
 
     protected BaseController(IServiceProvider serviceProvider)
     {
-        // Используем Lazy для отложенной загрузки зависимости
-        _userService = new Lazy<IAccountService>(() => serviceProvider.GetService<IAccountService>());
+        //Lazy для отложенной загрузки зависимости, тк account service нужен в базовом, но не нужен в контроллерах, которые наследуются от базового
+        _accountService = new Lazy<IAccountService>(() => serviceProvider.GetService<IAccountService>());
+        _courseService = new Lazy<ICourseService>(() => serviceProvider.GetService<ICourseService>());
     }
 
     protected async Task EnsureAdminRights(string email)
     {
-        var isAdmin = _userService.Value.IsUserAdmin(email);
+        var isAdmin = _accountService.Value.IsUserAdmin(email);
         if (!isAdmin)
         {
             throw new AccessDeniedException(Constants.ErrorMessages.AccessDenied);
+        }
+    }
+
+    protected async Task EnsureMainRights(string courseId, string userId, string email)
+    {
+        var isAdmin = _accountService.Value.IsUserAdmin(email);
+        var isMainTeacher = _courseService.Value.IsUserMainTeacher(courseId, userId);
+        if (!isMainTeacher && !isAdmin)
+        {
+            throw new AccessDeniedException(Constants.ErrorMessages.AccessDeniedAdminMainTeacher);
+        }
+        
+    }
+    protected async Task EnsureAdminOrTeacherRights(string courseId, string userId, string email)
+    {
+        var isAdmin = _accountService.Value.IsUserAdmin(email);
+        var isTeacher = _courseService.Value.IsUserTeacher(courseId, userId);
+        
+        if (!isAdmin && !isTeacher)
+        {
+            throw new AccessDeniedException(Constants.ErrorMessages.AccessDeniedAdminTeacher);
         }
     }
     protected string GetUserData(string claimType)

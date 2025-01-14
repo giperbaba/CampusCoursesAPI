@@ -68,7 +68,7 @@ public class GroupService: IGroupService
             throw new NotFoundException(Constants.ErrorMessages.GroupNotFound);
         }
 
-        return group.Courses.Select(Mapper.MapCourseEntityToCourseModel);
+        return group.Courses.Select(Mapper.MapCourseEntityToCoursePreviewModel);
     }
 
     private async Task<CampusGroup> GetGroupById(string id)

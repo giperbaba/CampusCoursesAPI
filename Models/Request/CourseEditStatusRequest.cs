@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using repassAPI.Constants;
+using repassAPI.Models.Enums;
 
 namespace repassAPI.Models.Request;
 
-public class RefreshRequest(string refreshToken)
+public class CourseEditStatusRequest
 {
     [Required(ErrorMessage = ErrorMessages.RequiredField)]
-    public string RefreshToken { get; set; } = refreshToken;
+    [EnumDataType(typeof(CourseStatus))]
+    public CourseStatus status { get; set; }
 }

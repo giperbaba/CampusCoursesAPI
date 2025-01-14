@@ -33,16 +33,13 @@ public class TokenService: ITokenService
     public void RemoveTokens(User user, string? accessToken)
     {
         List<RefreshToken> tokens = _context.RefreshTokens.Where(t => t.Email == user.Email).ToList();
+        
         if (tokens.Count != 0)
         {
             _context.RefreshTokens.RemoveRange(tokens);
-            
-            var bannedAccessToken = new AccessToken
-            {
-                Token = accessToken
-            };
+
+            var bannedAccessToken = new AccessToken(accessToken);
             _context.BannedTokens.Add(bannedAccessToken);
-            
             _context.SaveChanges();
         }
     }
@@ -50,8 +47,7 @@ public class TokenService: ITokenService
     public async Task CheckIsAccessTokenBanned(string accessToken)
     {
         bool isBanned = await _context.BannedTokens.AnyAsync(t => t.Token == accessToken);
-        if (isBanned)
-            throw new InvalidTokenException(ErrorMessages.InvalidToken);
+        if (isBanned) throw new InvalidTokenException(ErrorMessages.InvalidToken);
     }
     
     public string GetEmailFromRefreshToken(string? refreshToken)

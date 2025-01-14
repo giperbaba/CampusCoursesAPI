@@ -3,8 +3,8 @@ using repassAPI.Constants;
 
 namespace repassAPI.Models.Request;
 
-public class RefreshRequest(string refreshToken)
+public class CourseAddTeacherRequest
 {
     [Required(ErrorMessage = ErrorMessages.RequiredField)]
-    public string RefreshToken { get; set; } = refreshToken;
+    public string userId { get; set; }
 }

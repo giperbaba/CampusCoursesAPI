@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace repassAPI.Entities;
 
 [Table("banned_tokens")]
-public class AccessToken
+public class AccessToken(string token)
 {
     [Key]
     [Column("id")]  
@@ -12,5 +12,5 @@ public class AccessToken
     public int Id { get; set; }
     
     [Column("token")]
-    public string Token { get; set; } = null!;
+    public string Token { get; set; } = token;
 }
