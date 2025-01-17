@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using repassAPI.Data;
@@ -11,9 +12,11 @@ using repassAPI.Data;
 namespace repassAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250116151833_AddedCreateTimeToCourse")]
+    partial class AddedCreateTimeToCourse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,9 +78,9 @@ namespace repassAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("group_id");
 
-                    b.Property<DateTime>("CreateTime")
+                    b.Property<DateTime>("CreatedTime")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("create_time");
+                        .HasColumnName("created_time");
 
                     b.Property<Guid?>("MainTeacherId")
                         .HasColumnType("uuid")

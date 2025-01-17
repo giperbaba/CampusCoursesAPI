@@ -9,7 +9,6 @@ public static class ErrorMessages
     public const string IncorrectDate = "Incorrect birthdate";
     
     //Incorrect data format
-    public const string IncorrectPhoneFormat = "Incorrect phone format";
     public const string IncorrectEmailFormat = "Incorrect email format";
     public const string IncorrectPasswordFormat = "Password must be longer than 6 characters and have at least one number";
 
@@ -43,4 +42,8 @@ public static class ErrorMessages
     public const string AccessDeniedAdminTeacher = "You must be admin or teacher";
     //Success
     public const string Logout = "Logged Out";
+    
+    //Conflict
+    public const string ConflictStudentsCount = "There are already more students in the course than the new maximum number";
+    public const string ConflictCourseRemainingSlots = "There are no more places on the course";
 }

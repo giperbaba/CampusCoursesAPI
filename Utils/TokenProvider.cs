@@ -5,6 +5,7 @@ using repassAPI.Constants;
 using repassAPI.Data;
 using repassAPI.Entities;
 using repassAPI.Exceptions;
+using repassAPI.Services.Interfaces;
 
 namespace repassAPI.Utils;
 
@@ -12,11 +13,13 @@ public class TokenProvider
 {
     private readonly DatabaseContext _context;
     private readonly Tokens _tokens;
+    private readonly ITokenService _tokenService;
     
-    public TokenProvider(DatabaseContext context,  Tokens tokens)
+    public TokenProvider(DatabaseContext context,  Tokens tokens, ITokenService tokenService)
     {
         _context = context;
         _tokens = tokens;
+        _tokenService = tokenService;
     }
     
     public string GenerateAccessToken(User user)
@@ -57,7 +60,7 @@ public class TokenProvider
             return false;
         }
         CheckTokenEmail(token, user);
-        CheckTokenExpired(token);   
+        CheckTokenExpired(token, user);   
         return true;
     }
     
@@ -69,10 +72,11 @@ public class TokenProvider
         }
     }
     
-    private void CheckTokenExpired(RefreshToken token)
+    private void CheckTokenExpired(RefreshToken token, User user)
     {
         if (token.IsExpired)
         {
+            _tokenService.RemoveTokens(user, null);
             throw new InvalidTokenException(ErrorMessages.InvalidToken);
         }
     }

@@ -19,7 +19,7 @@ public class UsersController: BaseController
     [HttpGet("users")]
     public async Task<IActionResult> GetUsers()
     {
-        await EnsureAdminRights(GetUserData(ClaimTypes.Email));
+        await EnsureAdminRights(GetUserData(ClaimTypes.Name));
         return Ok(await _userService.GetUsers());
     }
 

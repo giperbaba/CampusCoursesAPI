@@ -35,7 +35,7 @@ public static class Mapper
     public static Course MapCourseFromCreateModelToEntity(Guid groupId, CourseCreateRequest courseRequest, int remainingSlots, CourseStatus courseStatus, Guid mainTeacherId)
     {
         return new Course(courseRequest.Name, courseRequest.StartYear, courseRequest.MaxStudentsCount,
-            remainingSlots, courseStatus, courseRequest.Semester, courseRequest.Requirements, courseRequest.Annotations, groupId, mainTeacherId);
+            remainingSlots, courseStatus, courseRequest.Semester, courseRequest.Requirements, courseRequest.Annotations, DateTime.Now.ToUniversalTime(), groupId, mainTeacherId);
     }
 
     public static CoursePreviewResponse MapCourseEntityToCoursePreviewModel(Course courseEntity)
@@ -58,14 +58,14 @@ public static class Mapper
     //Student
     public static CourseStudentResponse MapStudentEntityToStudentModel(CourseStudent studentEntity)
     {
-        return new CourseStudentResponse(studentEntity.Id, studentEntity.Name, studentEntity.Email,
+        return new CourseStudentResponse(studentEntity.Id, studentEntity.Student.FullName, studentEntity.Student.Email,
             studentEntity.Status, studentEntity.MidtermResult, studentEntity.FinalResult);
     }
     
     //Teacher
     public static CourseTeacherResponse MapTeacherEntityToTeacherModel(CourseTeacher teacherEntity)
     {
-        return new CourseTeacherResponse(teacherEntity.Name, teacherEntity.Email, teacherEntity.IsMainTeacher);
+        return new CourseTeacherResponse(teacherEntity.Teacher.FullName, teacherEntity.Teacher.Email, teacherEntity.IsMainTeacher);
     }
     
     //Notification

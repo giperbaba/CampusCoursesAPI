@@ -16,18 +16,18 @@ public class BaseController : ControllerBase
         _courseService = new Lazy<ICourseService>(() => serviceProvider.GetService<ICourseService>());
     }
 
-    protected async Task EnsureAdminRights(string email)
+    protected async Task EnsureAdminRights(string id)
     {
-        var isAdmin = _accountService.Value.IsUserAdmin(email);
+        var isAdmin = _accountService.Value.IsUserAdmin(id);
         if (!isAdmin)
         {
             throw new AccessDeniedException(Constants.ErrorMessages.AccessDenied);
         }
     }
 
-    protected async Task EnsureMainRights(string courseId, string userId, string email)
+    protected async Task EnsureMainRights(string courseId, string userId)
     {
-        var isAdmin = _accountService.Value.IsUserAdmin(email);
+        var isAdmin = _accountService.Value.IsUserAdmin(userId);
         var isMainTeacher = _courseService.Value.IsUserMainTeacher(courseId, userId);
         if (!isMainTeacher && !isAdmin)
         {
@@ -35,9 +35,9 @@ public class BaseController : ControllerBase
         }
         
     }
-    protected async Task EnsureAdminOrTeacherRights(string courseId, string userId, string email)
+    protected async Task EnsureAdminOrTeacherRights(string courseId, string userId)
     {
-        var isAdmin = _accountService.Value.IsUserAdmin(email);
+        var isAdmin = _accountService.Value.IsUserAdmin(userId);
         var isTeacher = _courseService.Value.IsUserTeacher(courseId, userId);
         
         if (!isAdmin && !isTeacher)
@@ -63,7 +63,7 @@ public class BaseController : ControllerBase
             throw new UnauthorizedAccessException("Authorization token is missing or invalid.");
         }
 
-        var token = authorizationHeader.Substring("Bearer ".Length);
+        var token = authorizationHeader.Substring("Bearer ".Length); //TODO: чо такое сабстринг
         return token;
     }
 }

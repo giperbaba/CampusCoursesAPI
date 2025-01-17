@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
+using repassAPI.Constants;
 using repassAPI.Models.Enums;
 
 namespace repassAPI.Entities;
@@ -15,6 +16,7 @@ public class Course(
     Semester semester,
     string requirements,
     string annotations,
+    DateTime createTime,
     Guid campusGroupId,
     Guid? mainTeacherId)
 {
@@ -29,10 +31,12 @@ public class Course(
     [Column("start_year")]  
     public int StartYear { get; set; } = startYear;
 
-    [Column("max_students_count")]  
+    [Column("max_students_count")] 
+    [Range(1, 200, ErrorMessage = ErrorMessages.InvalidStudentsAmount)]
     public int MaxStudentsCount { get; set; } = maxStudentsCount;
 
     [Column("remaining_slots_count")]  
+    [Range(1, 200, ErrorMessage = ErrorMessages.InvalidStudentsAmount)]
     public int RemainingSlotsCount { get; set; } = remainingSlotsCount;
 
     [Column("status")] 
@@ -54,6 +58,8 @@ public class Course(
     
     [Column("main_teacher_id")]
     public Guid? MainTeacherId { get; set; } = mainTeacherId;
+    
+    [Column("create_time")] public DateTime CreateTime { get; set; } = createTime;
 
     //навигационные свойства 
     [ForeignKey("CampusGroupId")]
@@ -64,9 +70,11 @@ public class Course(
     
     public ICollection<CourseStudent> Students { get; set; } = new List<CourseStudent>();
     public ICollection<CourseTeacher> Teachers { get; set; } = new List<CourseTeacher>();
-    
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     
+    [Range(1, 200, ErrorMessage = ErrorMessages.InvalidStudentsAmount)]
     public int StudentsEnrolledCount => Students.Count(s => s.Status == StudentStatus.Accepted);
+    
+    [Range(1, 200, ErrorMessage = ErrorMessages.InvalidStudentsAmount)]
     public int StudentsInQueueCount => Students.Count(s => s.Status == StudentStatus.InQueue);
 }

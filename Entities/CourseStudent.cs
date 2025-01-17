@@ -7,12 +7,10 @@ namespace repassAPI.Entities;
 [Table("course_student")]
 public class CourseStudent
 {
-    public CourseStudent(Guid courseId, Guid studentId, string name, string email)
+    public CourseStudent(Guid courseId, Guid studentId)
     {
         CourseId = courseId;
         StudentId = studentId;
-        Name = name;
-        Email = email;
     }
 
     [Key]
@@ -25,12 +23,6 @@ public class CourseStudent
 
     [Column("student_id")]
     public Guid StudentId { get; set; }
-    
-    [Column("student_name")]
-    public string Name { get; set; }
-    
-    [Column("student_email")]
-    public string Email { get; set; }
 
     [Column("student_status")] public StudentStatus Status { get; set; } = StudentStatus.InQueue;
 

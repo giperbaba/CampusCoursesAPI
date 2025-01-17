@@ -36,10 +36,14 @@ public class CourseService: ICourseService
 
     public async Task<CourseDetailedResponse> EditCourse(string courseId, CourseEditRequest request)
     {
-        await CheckIsUserExist(request.MainTeacherId);
-        
         var course = GetCourseById(Guid.Parse(courseId));
+
+        if (course.Students.Count > request.MaxStudentsCount)
+        {
+            throw new ConflictException(ErrorMessages.ConflictStudentsCount);
+        }
         Edit(course, request);
+        await _context.SaveChangesAsync();
         
         return await GetCourseDetailedInfo(courseId);
     }
@@ -55,6 +59,8 @@ public class CourseService: ICourseService
 
         var courseStudents = _context.CourseStudents.Where(cs => cs.CourseId == course.Id).ToList();
         _context.CourseStudents.RemoveRange(courseStudents);
+        
+        CheckStudentsRole(course, courseStudents);
 
         _context.Courses.Remove(course);
         await _context.SaveChangesAsync();
@@ -158,7 +164,9 @@ public class CourseService: ICourseService
     {
         var course = _context.Courses
             .Include(c => c.Teachers) 
+            .ThenInclude(ct => ct.Teacher)
             .Include(c => c.Students) 
+            .ThenInclude(ct => ct.Student)
             .Include(c => c.Notifications) 
             .FirstOrDefault(c => c.Id == courseId);
     
@@ -176,8 +184,7 @@ public class CourseService: ICourseService
         await CheckIsAlreadyStudent(teacherId, courseId);
         await CheckIsAlreadyTeacher(teacherId, courseId);
         
-        await _context.CourseTeachers.AddAsync(new CourseTeacher(courseId, teacherId, isMainTeacher,
-            await GetNameById(teacherId), await GetEmailById(teacherId)));
+        await _context.CourseTeachers.AddAsync(new CourseTeacher(courseId, teacherId, isMainTeacher));
         
         await GetTeacherRole(teacherId);
 
@@ -193,12 +200,21 @@ public class CourseService: ICourseService
         await CheckIsAlreadyStudent(studentId, courseId);
         await CheckIsAlreadyTeacher(studentId, courseId);
         
-        await _context.CourseStudents.AddAsync(new CourseStudent(courseId, studentId, await GetNameById(studentId),
-            await GetEmailById(studentId)));
         
-        await GetStudentRole(studentId);
+        var course = GetCourseById(courseId);
+        if (course.RemainingSlotsCount > 0)
+        {
+            await _context.CourseStudents.AddAsync(new CourseStudent(courseId, studentId));
+            
+            await GetStudentRole(studentId);
+            course.RemainingSlotsCount -= 1;
 
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+        }
+        else
+        {
+            throw new ConflictException(ErrorMessages.ConflictCourseRemainingSlots);
+        }
     }
 
     private async Task CheckIsUserExist(Guid id)
@@ -309,10 +325,10 @@ public class CourseService: ICourseService
     {
         course.Name = request.Name;
         course.StartYear = request.StartYear;
+        course.RemainingSlotsCount = request.MaxStudentsCount - (course.MaxStudentsCount - course.RemainingSlotsCount);
         course.MaxStudentsCount = request.MaxStudentsCount;
         course.Semester = request.Semester;
         course.Requirements = request.Requirements;
         course.Annotations = request.Annotations;
-        //course.MainTeacherId = request.MainTeacherId;
     }
 }

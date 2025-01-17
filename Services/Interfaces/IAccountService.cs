@@ -11,5 +11,5 @@ public interface IAccountService
     public Task<Response> Logout(string email, string accessToken);
     public Task<UserProfileResponse> GetProfile(string email, string accessToken);
     public Task<UserProfileResponse> EditProfile(string email, UserEditProfileRequest userEdit, string accessToken);
-    public bool IsUserAdmin(string email);
+    public bool IsUserAdmin(string id);
 }

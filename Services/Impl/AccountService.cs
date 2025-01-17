@@ -110,15 +110,25 @@ public class AccountService: IAccountService
         return userProfile;
     }
     
-    public bool IsUserAdmin(string email)
+    public bool IsUserAdmin(string id)
     {
-        return GetUserByEmail(email).IsAdmin;
+        return GetUserById(id).IsAdmin;
     }
 
     
     private User GetUserByEmail(string email)
     {
         var user = _context.Users.FirstOrDefault(u => u.Email == email);
+        if (user == null)
+        {
+            throw new NotFoundException(Constants.ErrorMessages.UserNotFound);
+        }
+        return user;
+    }
+    
+    private User GetUserById(string id)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Id.ToString() == id);
         if (user == null)
         {
             throw new NotFoundException(Constants.ErrorMessages.UserNotFound);

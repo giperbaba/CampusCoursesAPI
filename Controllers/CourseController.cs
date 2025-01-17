@@ -20,7 +20,7 @@ public class CourseController: BaseController
     [HttpPost("groups/{groupId}")]
     public async Task<IActionResult> CreateCourse(string groupId, CourseCreateRequest input)
     {
-        await EnsureAdminRights(GetUserData(ClaimTypes.Email));
+        await EnsureAdminRights(GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.CreateCourse(groupId, input));
     }
     
@@ -28,7 +28,7 @@ public class CourseController: BaseController
     [HttpPut("courses/{id}")]
     public async Task<IActionResult> EditCourse(string id, CourseEditRequest input)
     {
-        await EnsureAdminRights(GetUserData(ClaimTypes.Email));
+        await EnsureAdminRights(GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditCourse(id, input));
     }
     
@@ -36,7 +36,7 @@ public class CourseController: BaseController
     [HttpDelete("courses/{id}")]
     public async Task<IActionResult> DeleteCourse(string id)
     {
-        await EnsureAdminRights(GetUserData(ClaimTypes.Email));
+        await EnsureAdminRights(GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.DeleteCourse(id));
     }
 
@@ -44,7 +44,7 @@ public class CourseController: BaseController
     [HttpPost("courses/{id}/teachers")]
     public async Task<IActionResult> AddTeacherToCourse(string id, CourseAddTeacherRequest userId)
     {
-        await EnsureMainRights(id, GetUserData(ClaimTypes.Name), GetUserData(ClaimTypes.Email));
+        await EnsureMainRights(id, GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.AddTeacherToCourse(id, userId));
     }
 
@@ -52,7 +52,7 @@ public class CourseController: BaseController
     [HttpPost("courses/{id}/status")]
     public async Task<IActionResult> EditCourseStatus(string id, CourseEditStatusRequest input)
     {
-        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name), GetUserData(ClaimTypes.Email));
+        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditCourseStatus(id, input));
     }
 
@@ -60,7 +60,7 @@ public class CourseController: BaseController
     [HttpPut("courses/{id}/requirements-and-annotations")]
     public async Task<IActionResult> EditCourseReqAndAnnotations(string id, CourseEditReqAndAnnotationsRequest input)
     {
-        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name), GetUserData(ClaimTypes.Email));
+        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditCourseReqAndAnnotations(id, input));
     }
 

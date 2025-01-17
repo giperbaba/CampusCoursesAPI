@@ -29,7 +29,4 @@ public class CourseEditRequest
     [Required(ErrorMessage = ErrorMessages.RequiredField)]
     [StringLength(1000, MinimumLength = 1)]
     public string Annotations { get; set; }
-    
-    [Required(ErrorMessage = ErrorMessages.RequiredField)]
-    public Guid MainTeacherId { get; set; }
 }
