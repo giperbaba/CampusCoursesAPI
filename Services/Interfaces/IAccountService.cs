@@ -1,3 +1,4 @@
+using repassAPI.Entities;
 using repassAPI.Models.Request;
 using repassAPI.Models.Response;
 
@@ -12,4 +13,5 @@ public interface IAccountService
     public Task<UserProfileResponse> GetProfile(string email, string accessToken);
     public Task<UserProfileResponse> EditProfile(string email, UserEditProfileRequest userEdit, string accessToken);
     public bool IsUserAdmin(string id);
+    public User GetUserById(string id);
 }

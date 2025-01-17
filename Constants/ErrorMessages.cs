@@ -19,7 +19,7 @@ public static class ErrorMessages
     public const string InvalidStudentsAmount = "MaxStudentsCount must be between 1 and 200.";
 
     public const string InvalidCourseStatus = "Course status cannot be changed to a previous one";
-    public const string InvalidCourseStatusInRequest = "Course is close to asigning";
+    public const string InvalidCourseStatusInRequest = "Campus course is not open for signing up";
 
     public const string AlreadyIsTeacher = "User is already a teacher for this course.";
     public const string AlreadyIsStudent = "User is already a student for this course.";
@@ -46,4 +46,6 @@ public static class ErrorMessages
     //Conflict
     public const string ConflictStudentsCount = "There are already more students in the course than the new maximum number";
     public const string ConflictCourseRemainingSlots = "There are no more places on the course";
+    public const string ConflictStudentIsNotInTheCourse = "Student not found in the course.";
+    public const string ConflictStudentIsNotInTheQueue = "The student is not in the course queue.";
 }

@@ -6,6 +6,13 @@ namespace repassAPI.Entities;
 [Table("notifications")]
 public class Notification
 {
+    public Notification(Guid courseId, string text, bool isImportant)
+    {
+        CourseId = courseId;
+        Text = text;
+        IsImportant = isImportant;
+    }
+
     [Key]
     [Column("id")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

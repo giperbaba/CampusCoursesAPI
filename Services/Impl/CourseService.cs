@@ -14,10 +14,12 @@ namespace repassAPI.Services.Impl;
 public class CourseService: ICourseService
 {
     private readonly DatabaseContext _context;
+    private readonly IAccountService _accountService;
 
-    public CourseService(DatabaseContext context)
+    public CourseService(DatabaseContext context, IAccountService accountService)
     {
         _context = context;
+        _accountService = accountService;
     }
 
     //admin
@@ -42,10 +44,11 @@ public class CourseService: ICourseService
         {
             throw new ConflictException(ErrorMessages.ConflictStudentsCount);
         }
+        
         Edit(course, request);
         await _context.SaveChangesAsync();
         
-        return await GetCourseDetailedInfo(courseId);
+        return await GetCourseDetailedInfo(courseId, null);
     }
     
     public async Task<CoursePreviewResponse> DeleteCourse(string id)
@@ -73,7 +76,7 @@ public class CourseService: ICourseService
     public async Task<CourseDetailedResponse> AddTeacherToCourse(string courseId, CourseAddTeacherRequest request)
     {
         await AddTeacher(Guid.Parse(courseId), Guid.Parse(request.userId.ToString()), false);
-        return await GetCourseDetailedInfo(courseId);
+        return await GetCourseDetailedInfo(courseId, null);
     }
     
     
@@ -91,7 +94,7 @@ public class CourseService: ICourseService
         _context.Courses.Update(course); 
         await _context.SaveChangesAsync();
         
-        return await GetCourseDetailedInfo(courseId);
+        return await GetCourseDetailedInfo(courseId, null);
     }
 
     public async Task<CourseDetailedResponse> EditCourseReqAndAnnotations(string courseId,
@@ -104,8 +107,88 @@ public class CourseService: ICourseService
         _context.Courses.Update(course); 
         await _context.SaveChangesAsync();
 
-        return await GetCourseDetailedInfo(courseId);
+        return await GetCourseDetailedInfo(courseId, null);
     }
+    
+    public async Task<CourseDetailedResponse> CreateNewNotification(string courseId,
+        NotificationCreateRequest notificationCreateRequest)
+    {
+        var course = GetCourseById(Guid.Parse(courseId));
+
+        if (course == null)
+        {
+            throw new NotFoundException(ErrorMessages.CourseNotFound);
+        }
+
+        var notification = Mapper.MapNotificationCreateModelToEntity(courseId, notificationCreateRequest);
+
+        await _context.Notifications.AddAsync(notification);
+        await _context.SaveChangesAsync();
+
+        return await GetCourseDetailedInfo(courseId, null);
+    }
+
+
+
+    public async Task<CourseDetailedResponse> EditStudentStatus(string courseId, string studentId,
+        CourseStudentEditStatusRequest editStatusRequest)
+    {
+        await CheckIsUserExist(Guid.Parse(studentId));
+    
+        var course = GetCourseById(Guid.Parse(courseId));
+
+        if (course.RemainingSlotsCount - 1 < 0)
+        {
+            throw new ConflictException(ErrorMessages.ConflictCourseRemainingSlots);
+            
+        }
+        
+        //CheckIsStudentInQueue(studentId, courseId);
+        
+        var student = course.Students.FirstOrDefault(s => s.StudentId.ToString().ToLower() == studentId.ToLower());
+    
+        if (student == null)
+        {
+            throw new NotFoundException(ErrorMessages.ConflictStudentIsNotInTheCourse);
+        }
+        
+        student.Status = editStatusRequest.Status;
+        _context.CourseStudents.Update(student);
+        await _context.SaveChangesAsync();
+
+        return await GetCourseDetailedInfo(courseId, null!);
+    }
+
+    
+    
+    public async Task<CourseDetailedResponse> EditStudentMark(string courseId, string studentId,
+        CourseStudentEditMarkRequest editMarkRequest)
+    {
+        await CheckIsUserExist(Guid.Parse(studentId));
+    
+        var course = GetCourseById(Guid.Parse(courseId));
+        
+        var student = course.Students.FirstOrDefault(s => s.StudentId.ToString().ToLower() == studentId.ToLower());
+        if (student == null)
+        {
+            throw new NotFoundException(ErrorMessages.ConflictStudentIsNotInTheCourse);
+        }
+
+        if (editMarkRequest.MarkType == MarkType.Final)
+        {
+            student.FinalResult = editMarkRequest.Mark;
+        }
+        else if (editMarkRequest.MarkType == MarkType.Midterm)
+        {
+            student.MidtermResult = editMarkRequest.Mark;
+        }
+    
+        _context.CourseStudents.Update(student);
+        await _context.SaveChangesAsync();
+
+        return await GetCourseDetailedInfo(courseId, null!);
+    }
+
     
     //anybody
     public async Task<IResult> SignUp(string courseId, string userId)
@@ -115,35 +198,97 @@ public class CourseService: ICourseService
         {
             throw new BadRequestException(ErrorMessages.InvalidCourseStatusInRequest);
         }
-        await AddStudent(Guid.Parse(courseId), Guid.Parse(userId));
+        await AddStudentToQueue(Guid.Parse(courseId), Guid.Parse(userId));
         return Results.Ok();
     }
+
+    public async Task<IList<CoursePreviewResponse>> GetStudingCourses(string userId)
+    {
+        var user = await _context.Users
+            .Include(u => u.StudingCourses)
+            .ThenInclude(sc => sc.Course) 
+            .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
+        var courses = user.StudingCourses;
+
+        IList<CoursePreviewResponse> coursesResponse = [];
+        foreach (CourseStudent courseStudent in courses)
+        {
+            coursesResponse.Add(Mapper.MapCourseEntityToCoursePreviewModel(courseStudent.Course));
+        }
+
+        return coursesResponse;
+    }
+
+    public async Task<IList<CoursePreviewResponse>> GetMyTeachingCourses(string userId)
+    {
+        var user = await _context.Users
+            .Include(u => u.TeachingCourses) 
+            .ThenInclude(tc => tc.Course) 
+            .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
+        
+        var courses = user.TeachingCourses;
+
+        IList<CoursePreviewResponse> coursesResponse = [];
+        foreach (CourseTeacher courseTeacher in courses)
+        {
+            coursesResponse.Add(Mapper.MapCourseEntityToCoursePreviewModel(courseTeacher.Course));
+        }
+
+        return coursesResponse;
+    }
     
-    public async Task<CourseDetailedResponse> GetCourseDetailedInfo(string courseId)
+    public async Task<CourseDetailedResponse> GetCourseDetailedInfo(string courseId, string? userId)
     {
         var course = GetCourseById(Guid.Parse(courseId));
-        
-        IList<CourseStudentResponse> students = [];
-        IList<CourseTeacherResponse> teachers = [];
-        IList<CourseNotificationResponse> notifications = [];
-
-        foreach (CourseStudent studentEntity in course.Students)
-        {
-            students.Add(Mapper.MapStudentEntityToStudentModel(studentEntity));
-        }
-
-        foreach (CourseTeacher teacherEntity in course.Teachers)
-        {
-            teachers.Add(Mapper.MapTeacherEntityToTeacherModel(teacherEntity));
-        }
-
-        foreach (Notification notificationEntity in course.Notifications)
-        {
-            notifications.Add(Mapper.MapNotificationEntityToNotificationModel(notificationEntity));
-        }
+    
+        IList<CourseStudentResponse> students = GetStudentsList(course, userId);
+        IList<CourseTeacherResponse> teachers = GetTeachersList(course);
+        IList<CourseNotificationResponse> notifications = GetNotificationsList(course);
 
         var courseDetailedModel = Mapper.MapCourseEntityToCourseDetailsModel(course, students, teachers, notifications);
         return courseDetailedModel;
+    }
+    
+    public async Task<IEnumerable<CoursePreviewResponse>> GetCourses(SortType? sort, string? search, 
+        bool? hasPlacesAndOpen, Semester? semester, int page, int pageSize)
+    {
+        var query = _context.Courses.AsQueryable();
+    
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(course => course.Name.Contains(search));
+        }
+
+        if (hasPlacesAndOpen == true)
+        {
+            query = query.Where(course => course.RemainingSlotsCount > 0 && course.Status == CourseStatus.OpenForAssigning);
+        }
+
+        if (semester.HasValue)
+        {
+            query = query.Where(course => course.Semester == semester.Value);
+        }
+    
+        query = sort switch
+        {
+            SortType.CreatedAsc => query.OrderBy(course => course.CreateTime),
+            SortType.CreatedDesc => query.OrderByDescending(course => course.CreateTime),
+            _ => query.OrderBy(course => course.CreateTime) 
+        };
+    
+        query = query.Skip((page - 1) * pageSize).Take(pageSize);
+    
+        return await query
+            .Select(course => new CoursePreviewResponse(
+                course.Id.ToString(),
+                course.Name,
+                course.StartYear,
+                course.MaxStudentsCount,
+                (course.MaxStudentsCount - course.Students.Count + course.StudentsInQueueCount),
+                course.Status,
+                course.Semester
+            ))
+            .ToListAsync();
     }
     
     //check
@@ -192,7 +337,7 @@ public class CourseService: ICourseService
     }
 
     
-    private async Task AddStudent(Guid courseId, Guid studentId, StudentStatus studentStatus = StudentStatus.InQueue)
+    private async Task AddStudentToQueue(Guid courseId, Guid studentId, StudentStatus studentStatus = StudentStatus.InQueue)
     {
         await CheckIsCourseExist(courseId);
         await CheckIsUserExist(studentId);
@@ -200,26 +345,18 @@ public class CourseService: ICourseService
         await CheckIsAlreadyStudent(studentId, courseId);
         await CheckIsAlreadyTeacher(studentId, courseId);
         
-        
         var course = GetCourseById(courseId);
-        if (course.RemainingSlotsCount > 0)
-        {
-            await _context.CourseStudents.AddAsync(new CourseStudent(courseId, studentId));
+        
+        await _context.CourseStudents.AddAsync(new CourseStudent(courseId, studentId));
             
-            await GetStudentRole(studentId);
-            course.RemainingSlotsCount -= 1;
+        await GetStudentRole(studentId);
 
-            await _context.SaveChangesAsync();
-        }
-        else
-        {
-            throw new ConflictException(ErrorMessages.ConflictCourseRemainingSlots);
-        }
+        await _context.SaveChangesAsync();
     }
 
     private async Task CheckIsUserExist(Guid id)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.ToString().ToLower() == id.ToString().ToLower());
         if (user == null)
             throw new NotFoundException(ErrorMessages.UserNotFound);
     }
@@ -267,26 +404,6 @@ public class CourseService: ICourseService
         }
     }
 
-    private async Task<string> GetNameById(Guid userId)
-    {
-        var user = await _context.Users.FindAsync(userId);
-        
-        if (user == null)
-            throw new NotFoundException(ErrorMessages.CourseNotFound);
-        
-        return user.FullName;
-    }
-
-    private async Task<string> GetEmailById(Guid userId)
-    {
-        var user = await _context.Users.FindAsync(userId);
-        
-        if (user == null)
-            throw new NotFoundException(ErrorMessages.CourseNotFound);
-        
-        return user.Email;
-    }
-
     private void CheckTeachersRole(Course course, List<CourseTeacher> courseTeachers)
     {
         foreach (var teacher in courseTeachers)
@@ -330,5 +447,63 @@ public class CourseService: ICourseService
         course.Semester = request.Semester;
         course.Requirements = request.Requirements;
         course.Annotations = request.Annotations;
+    }
+    
+    private IList<CourseStudentResponse> GetStudentsList(Course course, string? userId)
+    {
+        IList<CourseStudentResponse> students = new List<CourseStudentResponse>();
+
+        foreach (CourseStudent studentEntity in course.Students)
+        {
+            // если админ учитель или этот ученик то показываем резы
+            if (userId == null || 
+                studentEntity.Id.ToString() == userId || 
+                _accountService.IsUserAdmin(userId) || 
+                IsUserTeacher(course.Id.ToString(), userId))
+            {
+                students.Add(Mapper.MapStudentEntityToStudentModelWithResults(studentEntity));
+            }
+            // в других случ не показываем
+            else if (studentEntity.Status == StudentStatus.Accepted)
+            {
+                students.Add(Mapper.MapStudentEntityToStudentModelWithoutResults(studentEntity));
+            }
+        }
+
+        return students;
+    }
+    
+    private IList<CourseTeacherResponse> GetTeachersList(Course course)
+    {
+        IList<CourseTeacherResponse> teachers = [];
+        foreach (CourseTeacher teacherEntity in course.Teachers)
+        {
+            teachers.Add(Mapper.MapTeacherEntityToTeacherModel(teacherEntity));
+        }
+
+        return teachers;
+    }
+    
+    private IList<CourseNotificationResponse> GetNotificationsList(Course course)
+    {
+        IList<CourseNotificationResponse> notifications = [];
+
+        foreach (Notification notificationEntity in course.Notifications)
+        {
+            notifications.Add(Mapper.MapNotificationEntityToNotificationModel(notificationEntity));
+        }
+
+        return notifications;
+    }
+    
+    private void CheckIsStudentInQueue(string studentId, string courseId)
+    {
+        var isStudentInQueue = _context.CourseStudents
+            .Any(cs => cs.CourseId == Guid.Parse(courseId) && cs.StudentId == Guid.Parse(studentId) && cs.Status == StudentStatus.InQueue);
+
+        if (!isStudentInQueue)
+        {
+            throw new ConflictException(ErrorMessages.ConflictStudentIsNotInTheQueue);
+        }
     }
 }

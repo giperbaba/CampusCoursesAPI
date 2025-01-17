@@ -126,7 +126,7 @@ public class AccountService: IAccountService
         return user;
     }
     
-    private User GetUserById(string id)
+    public User GetUserById(string id)
     {
         var user = _context.Users.FirstOrDefault(u => u.Id.ToString() == id);
         if (user == null)

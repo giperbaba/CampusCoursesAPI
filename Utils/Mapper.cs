@@ -56,10 +56,19 @@ public static class Mapper
     }
     
     //Student
-    public static CourseStudentResponse MapStudentEntityToStudentModel(CourseStudent studentEntity)
+    
+    //with results
+    public static CourseStudentResponse MapStudentEntityToStudentModelWithResults(CourseStudent studentEntity)
     {
-        return new CourseStudentResponse(studentEntity.Id, studentEntity.Student.FullName, studentEntity.Student.Email,
+        return new CourseStudentResponse(studentEntity.StudentId, studentEntity.Student.FullName, studentEntity.Student.Email,
             studentEntity.Status, studentEntity.MidtermResult, studentEntity.FinalResult);
+    }
+    
+    //without results 
+    public static CourseStudentResponse MapStudentEntityToStudentModelWithoutResults(CourseStudent studentEntity)
+    {
+        return new CourseStudentResponse(studentEntity.StudentId, studentEntity.Student.FullName, studentEntity.Student.Email,
+            studentEntity.Status, StudentMark.NotDefined, StudentMark.NotDefined);
     }
     
     //Teacher
@@ -72,5 +81,10 @@ public static class Mapper
     public static CourseNotificationResponse MapNotificationEntityToNotificationModel(Notification notifEntity)
     {
         return new CourseNotificationResponse(notifEntity.Text, notifEntity.IsImportant);
+    }
+
+    public static Notification MapNotificationCreateModelToEntity(string courseId, NotificationCreateRequest notificationRequest)
+    {
+        return new Notification(Guid.Parse(courseId), notificationRequest.Text, notificationRequest.IsImportant);
     }
 }
