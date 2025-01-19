@@ -23,6 +23,8 @@ public static class ErrorMessages
 
     public const string AlreadyIsTeacher = "User is already a teacher for this course.";
     public const string AlreadyIsStudent = "User is already a student for this course.";
+
+    public const string InvalidGroupsId = "One or more campus group ids are invalid.";
     
     //Login failed errors
     public const string ConflictEmail = "Email is already registered";

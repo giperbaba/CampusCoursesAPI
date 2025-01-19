@@ -252,8 +252,10 @@ public class CourseService: ICourseService
     public async Task<IEnumerable<CoursePreviewResponse>> GetCourses(SortType? sort, string? search, 
         bool? hasPlacesAndOpen, Semester? semester, int page, int pageSize)
     {
-        var query = _context.Courses.AsQueryable();
-    
+        var query = _context.Courses
+            .Include(c => c.Students)
+            .AsQueryable();
+
         if (!string.IsNullOrWhiteSpace(search))
         {
             query = query.Where(course => course.Name.Contains(search));
@@ -279,15 +281,7 @@ public class CourseService: ICourseService
         query = query.Skip((page - 1) * pageSize).Take(pageSize);
     
         return await query
-            .Select(course => new CoursePreviewResponse(
-                course.Id.ToString(),
-                course.Name,
-                course.StartYear,
-                course.MaxStudentsCount,
-                (course.MaxStudentsCount - course.Students.Count + course.StudentsInQueueCount),
-                course.Status,
-                course.Semester
-            ))
+            .Select(course => Mapper.MapCourseEntityToCoursePreviewModel(course))
             .ToListAsync();
     }
     
@@ -344,8 +338,6 @@ public class CourseService: ICourseService
 
         await CheckIsAlreadyStudent(studentId, courseId);
         await CheckIsAlreadyTeacher(studentId, courseId);
-        
-        var course = GetCourseById(courseId);
         
         await _context.CourseStudents.AddAsync(new CourseStudent(courseId, studentId));
             
@@ -494,16 +486,5 @@ public class CourseService: ICourseService
         }
 
         return notifications;
-    }
-    
-    private void CheckIsStudentInQueue(string studentId, string courseId)
-    {
-        var isStudentInQueue = _context.CourseStudents
-            .Any(cs => cs.CourseId == Guid.Parse(courseId) && cs.StudentId == Guid.Parse(studentId) && cs.Status == StudentStatus.InQueue);
-
-        if (!isStudentInQueue)
-        {
-            throw new ConflictException(ErrorMessages.ConflictStudentIsNotInTheQueue);
-        }
     }
 }

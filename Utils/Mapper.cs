@@ -41,7 +41,8 @@ public static class Mapper
     public static CoursePreviewResponse MapCourseEntityToCoursePreviewModel(Course courseEntity)
     {
         return new CoursePreviewResponse(courseEntity.Id.ToString(), courseEntity.Name, courseEntity.StartYear,
-            courseEntity.MaxStudentsCount, courseEntity.RemainingSlotsCount, courseEntity.Status,
+            courseEntity.MaxStudentsCount, (courseEntity.MaxStudentsCount -
+                courseEntity.StudentsEnrolledCount), courseEntity.Status,
             courseEntity.Semester);
     }
 
@@ -68,7 +69,7 @@ public static class Mapper
     public static CourseStudentResponse MapStudentEntityToStudentModelWithoutResults(CourseStudent studentEntity)
     {
         return new CourseStudentResponse(studentEntity.StudentId, studentEntity.Student.FullName, studentEntity.Student.Email,
-            studentEntity.Status, StudentMark.NotDefined, StudentMark.NotDefined);
+            studentEntity.Status, null, null);
     }
     
     //Teacher
@@ -86,5 +87,24 @@ public static class Mapper
     public static Notification MapNotificationCreateModelToEntity(string courseId, NotificationCreateRequest notificationRequest)
     {
         return new Notification(Guid.Parse(courseId), notificationRequest.Text, notificationRequest.IsImportant);
+    }
+    
+    //Report
+    public static CampusGroupReportResponse MapCampusGroupEntityToReportResponse(CampusGroup groupEntity, int passedCount, int failedCount, int totalCount)
+    {
+        return new CampusGroupReportResponse
+        {
+            Id = groupEntity.Id,
+            Name = groupEntity.Name,
+            AveragePassed = totalCount == 0 ? 0 : passedCount / (double)totalCount,
+            AverageFailed = totalCount == 0 ? 0 : failedCount / (double)totalCount
+        };
+    }
+    
+    public static TeacherReportRecordResponse MapTeacherToReportRecordResponse(
+        User teacher,
+        IEnumerable<CampusGroupReportResponse> groupResponses)
+    {
+        return new TeacherReportRecordResponse(teacher.FullName, teacher.Id, groupResponses.ToList());
     }
 }

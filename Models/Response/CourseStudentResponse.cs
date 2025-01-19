@@ -9,13 +9,13 @@ public class CourseStudentResponse(
     string name,
     string email,
     StudentStatus status,
-    StudentMark midtermResult,
-    StudentMark finalResult)
+    StudentMark? midtermResult,
+    StudentMark? finalResult)
 {
     public Guid Id { get; set; } = id;
     public string Name { get; set; } = name;
     public string Email { get; set; } = email;
     public StudentStatus Status { get; set; } = status;
-    public StudentMark MidtermResult { get; set; } = midtermResult;
-    public StudentMark FinalResult { get; set; } = finalResult;
+    public StudentMark? MidtermResult { get; set; } = midtermResult;
+    public StudentMark? FinalResult { get; set; } = finalResult;
 }
