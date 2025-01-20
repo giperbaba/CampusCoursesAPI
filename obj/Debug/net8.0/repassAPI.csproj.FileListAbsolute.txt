@@ -164,3 +164,6 @@
 /Users/giperbaba/RiderProjects/repassAPI/repassAPI/obj/Debug/net8.0/repassAPI.pdb
 /Users/giperbaba/RiderProjects/repassAPI/repassAPI/obj/Debug/net8.0/repassAPI.genruntimeconfig.cache
 /Users/giperbaba/RiderProjects/repassAPI/repassAPI/obj/Debug/net8.0/ref/repassAPI.dll
+/Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/Quartz.dll
+/Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/Quartz.Extensions.DependencyInjection.dll
+/Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/Quartz.Extensions.Hosting.dll

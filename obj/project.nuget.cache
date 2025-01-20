@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kPbNZyZN/EcciQI4Jn6cdusVT18R/N7PwXJ7iQga2dvGXVCPoTc/G4HDsfNvwvxdfYYiOcbKRlPxhZYIyehqnQ==",
+  "dgSpecHash": "6qxfqx91sSv69RT3CYi8q+JH4bZ7iLjtp1Tv8pkGJ3mYB22hR8Jf26207JeXt25KTz8qMIBX3Y3MObKCTzxlJg==",
   "success": true,
   "projectFilePath": "/Users/giperbaba/RiderProjects/repassAPI/repassAPI/repassAPI.csproj",
   "expectedPackageFiles": [
@@ -32,6 +32,9 @@
     "/Users/giperbaba/.nuget/packages/microsoft.extensions.dependencyinjection/9.0.0/microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/microsoft.extensions.dependencymodel/9.0.0/microsoft.extensions.dependencymodel.9.0.0.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/microsoft.extensions.diagnostics.abstractions/8.0.0/microsoft.extensions.diagnostics.abstractions.8.0.0.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/microsoft.extensions.fileproviders.abstractions/8.0.0/microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/microsoft.extensions.hosting.abstractions/8.0.0/microsoft.extensions.hosting.abstractions.8.0.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/microsoft.extensions.logging/9.0.0/microsoft.extensions.logging.9.0.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/microsoft.extensions.logging.abstractions/9.0.0/microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/microsoft.extensions.options/9.0.0/microsoft.extensions.options.9.0.0.nupkg.sha512",
@@ -48,6 +51,9 @@
     "/Users/giperbaba/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/npgsql/9.0.2/npgsql.9.0.2.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/npgsql.entityframeworkcore.postgresql/9.0.2/npgsql.entityframeworkcore.postgresql.9.0.2.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/quartz/3.13.1/quartz.3.13.1.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/quartz.extensions.dependencyinjection/3.13.1/quartz.extensions.dependencyinjection.3.13.1.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/quartz.extensions.hosting/3.13.1/quartz.extensions.hosting.3.13.1.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/runtime.native.system.data.sqlclient.sni/4.7.0/runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/runtime.win-arm64.runtime.native.system.data.sqlclient.sni/4.4.0/runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/runtime.win-x64.runtime.native.system.data.sqlclient.sni/4.4.0/runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
