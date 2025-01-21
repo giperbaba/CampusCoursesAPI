@@ -25,6 +25,10 @@ public static class ErrorMessages
     public const string AlreadyIsStudent = "User is already a student for this course.";
 
     public const string InvalidGroupsId = "One or more campus group ids are invalid.";
+
+    public const string StudentNotInQueue = "This student is not in queue. Their status cannot be changed";
+
+    public const string InvalidPageCountOrPageSize = "Page count and page size must be greater than 0";
     
     //Login failed errors
     public const string ConflictEmail = "Email is already registered";
@@ -49,5 +53,4 @@ public static class ErrorMessages
     public const string ConflictStudentsCount = "There are already more students in the course than the new maximum number";
     public const string ConflictCourseRemainingSlots = "There are no more places on the course";
     public const string ConflictStudentIsNotInTheCourse = "Student not found in the course.";
-    public const string ConflictStudentIsNotInTheQueue = "The student is not in the course queue.";
 }

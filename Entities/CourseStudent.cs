@@ -26,9 +26,9 @@ public class CourseStudent
 
     [Column("student_status")] public StudentStatus Status { get; set; } = StudentStatus.InQueue;
 
-    [Column("midterm_result")] public StudentMark MidtermResult { get; set; } = StudentMark.NotDefined;
+    [Column("midterm_result")] public StudentMark? MidtermResult { get; set; } = null;
 
-    [Column("final_result")] public StudentMark FinalResult { get; set; } = StudentMark.NotDefined;
+    [Column("final_result")] public StudentMark? FinalResult { get; set; } = null;
 
     //навигационные свойства
     [ForeignKey("CourseId")]

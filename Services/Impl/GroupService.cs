@@ -61,6 +61,7 @@ public class GroupService: IGroupService
     {
         var group = await _context.CampusGroups
             .Include(g => g.Courses)
+            .ThenInclude(c => c.Students)
             .FirstOrDefaultAsync(g => g.Id.ToString() == groupId);
 
         if (group == null)

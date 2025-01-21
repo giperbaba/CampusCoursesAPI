@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using repassAPI.Constants;
 using repassAPI.Data;
 using repassAPI.Entities;
@@ -25,6 +26,8 @@ public class CourseService: ICourseService
     //admin
     public async Task<CoursePreviewResponse> CreateCourse(string groupId, CourseCreateRequest courseCreate)
     {
+        await CheckIsUserExist(courseCreate.MainTeacherId);
+
         var course = Mapper.MapCourseFromCreateModelToEntity(Guid.Parse(groupId), courseCreate, courseCreate.MaxStudentsCount, CourseStatus.Created, courseCreate.MainTeacherId);
         
         await _context.Courses.AddAsync(course);
@@ -137,13 +140,12 @@ public class CourseService: ICourseService
     
         var course = GetCourseById(Guid.Parse(courseId));
 
-        if (course.RemainingSlotsCount - 1 < 0)
+        if (course.MaxStudentsCount == course.StudentsEnrolledCount && editStatusRequest.Status == StudentStatus.Accepted)
         {
             throw new ConflictException(ErrorMessages.ConflictCourseRemainingSlots);
-            
         }
         
-        //CheckIsStudentInQueue(studentId, courseId);
+        await CheckIsStudentInQueue(studentId, courseId);
         
         var student = course.Students.FirstOrDefault(s => s.StudentId.ToString().ToLower() == studentId.ToLower());
     
@@ -153,6 +155,9 @@ public class CourseService: ICourseService
         }
         
         student.Status = editStatusRequest.Status;
+        student.MidtermResult = StudentMark.NotDefined;
+        student.FinalResult = StudentMark.NotDefined;
+        
         _context.CourseStudents.Update(student);
         await _context.SaveChangesAsync();
 
@@ -178,6 +183,7 @@ public class CourseService: ICourseService
         {
             student.FinalResult = editMarkRequest.Mark;
         }
+        
         else if (editMarkRequest.MarkType == MarkType.Midterm)
         {
             student.MidtermResult = editMarkRequest.Mark;
@@ -252,6 +258,11 @@ public class CourseService: ICourseService
     public async Task<IEnumerable<CoursePreviewResponse>> GetCourses(SortType? sort, string? search, 
         bool? hasPlacesAndOpen, Semester? semester, int page, int pageSize)
     {
+        if (page <= 0 || pageSize <= 0)
+        {
+            throw new BadRequestException(ErrorMessages.InvalidPageCountOrPageSize);
+        }
+        
         var query = _context.Courses
             .Include(c => c.Students)
             .AsQueryable();
@@ -365,7 +376,7 @@ public class CourseService: ICourseService
         var isAlreadyStudent = await _context.CourseStudents
             .AnyAsync(cs => cs.CourseId == courseId && cs.StudentId == userId);
         if (isAlreadyStudent)
-            throw new ConflictException(ErrorMessages.AlreadyIsStudent);
+            throw new BadRequestException(ErrorMessages.AlreadyIsStudent);
     }
 
     private async Task CheckIsAlreadyTeacher(Guid userId, Guid courseId)
@@ -373,7 +384,7 @@ public class CourseService: ICourseService
         var isAlreadyTeacher = await _context.CourseTeachers
             .AnyAsync(ct => ct.CourseId == courseId && ct.TeacherId == userId);
         if (isAlreadyTeacher)
-            throw new ConflictException(ErrorMessages.AlreadyIsTeacher);
+            throw new BadRequestException(ErrorMessages.AlreadyIsTeacher);
     }
 
     private async Task GetTeacherRole(Guid userId)
@@ -486,5 +497,16 @@ public class CourseService: ICourseService
         }
 
         return notifications;
+    }
+
+    private async Task CheckIsStudentInQueue(string studentId, string courseId)
+    {
+        var isStudentInQueue = await _context.CourseStudents
+            .AnyAsync(cs => cs.StudentId.ToString() == studentId && cs.CourseId.ToString() == courseId && cs.Status == StudentStatus.InQueue);
+
+        if (!isStudentInQueue)
+        {
+            throw new BadRequestException(ErrorMessages.StudentNotInQueue);
+        }
     }
 }
