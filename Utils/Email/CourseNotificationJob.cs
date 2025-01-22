@@ -4,7 +4,7 @@ using repassAPI.Data;
 using repassAPI.Models.Enums;
 using repassAPI.Services.Interfaces;
 
-namespace repassAPI.Utils;
+namespace repassAPI.Utils.Email;
 
 public class CourseNotificationJob : IJob
 {

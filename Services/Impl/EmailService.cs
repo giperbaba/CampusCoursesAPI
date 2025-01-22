@@ -3,6 +3,7 @@ using System.Net.Mail;
 using Microsoft.Extensions.Options;
 using repassAPI.Services.Interfaces;
 using repassAPI.Utils;
+using repassAPI.Utils.Email;
 
 namespace repassAPI.Services.Impl;
 

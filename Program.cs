@@ -9,6 +9,7 @@ using repassAPI.Middleware;
 using repassAPI.Services.Impl;
 using repassAPI.Services.Interfaces;
 using repassAPI.Utils;
+using repassAPI.Utils.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +42,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(springJobKey)
         .WithIdentity("SpringCourseNotification-trigger")
-        .WithCronSchedule("0 0 12 28 2 ?")); //28 февраля 12:00 / каждую секунду "0/1 * * * * ?"
+        .WithCronSchedule("0 0 12 28 2 ?")); //28 февраля 12:00 / каждую секунду "0/1 * * * * ?" 
 
     var autumnJobKey = new JobKey("AutumnCourseNotificationJob");
     q.AddJob<CourseNotificationJob>(opts => opts.WithIdentity(autumnJobKey));
@@ -49,6 +50,8 @@ builder.Services.AddQuartz(q =>
         .ForJob(autumnJobKey)
         .WithIdentity("AutumnCourseNotification-trigger")
         .WithCronSchedule("0 0 12 31 8 ?")); //31 августа 12:00
+    
+    q.AddJobListener<RetryJobListener>();
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 

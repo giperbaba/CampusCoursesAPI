@@ -27,7 +27,7 @@ public class CourseController: BaseController
     
     [Authorize]
     [HttpDelete("courses/{id}")]
-    public async Task<IActionResult> DeleteCourse(string id)
+    public async Task<IActionResult> DeleteCourse(Guid id)
     {
         await EnsureAdminRights(GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.DeleteCourse(id));
@@ -35,7 +35,7 @@ public class CourseController: BaseController
     
     [Authorize]
     [HttpPut("courses/{id}")]
-    public async Task<IActionResult> EditCourse(string id, CourseEditRequest input)
+    public async Task<IActionResult> EditCourse(Guid id, CourseEditRequest input)
     {
         await EnsureAdminRights(GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditCourse(id, input));
@@ -44,64 +44,64 @@ public class CourseController: BaseController
     
     [Authorize]
     [HttpPut("courses/{id}/requirements-and-annotations")]
-    public async Task<IActionResult> EditCourseReqAndAnnotations(string id, CourseEditReqAndAnnotationsRequest input)
+    public async Task<IActionResult> EditCourseReqAndAnnotations(Guid id, CourseEditReqAndAnnotationsRequest input)
     {
-        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name));
+        await EnsureAdminOrTeacherRights(id.ToString(), GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditCourseReqAndAnnotations(id, input));
     }
     
     [Authorize]
     [HttpPost("courses/{id}/status")]
-    public async Task<IActionResult> EditCourseStatus(string id, CourseEditStatusRequest input)
+    public async Task<IActionResult> EditCourseStatus(Guid id, CourseEditStatusRequest input)
     {
-        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name));
+        await EnsureAdminOrTeacherRights(id.ToString(), GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditCourseStatus(id, input));
     }
     
     [Authorize]
     [HttpPost("courses/{id}/sign-up")]
-    public async Task<IActionResult> SignUp(string id)
+    public async Task<IActionResult> SignUp(Guid id)
     {
-        return Ok(await _courseService.SignUp(id, GetUserData(ClaimTypes.Name)));
+        return Ok(await _courseService.SignUp(id.ToString(), GetUserData(ClaimTypes.Name)));
     }
     
     [Authorize]
     [HttpPost("courses/{id}/student-status/{studentId}")]
-    public async Task<IActionResult> EditStudentStatus(string id, string studentId, CourseStudentEditStatusRequest input)
+    public async Task<IActionResult> EditStudentStatus(Guid id, Guid studentId, CourseStudentEditStatusRequest input)
     {
-        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name));
+        await EnsureAdminOrTeacherRights(id.ToString(), GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditStudentStatus(id, studentId, input));
     }
 
     [Authorize]
     [HttpPost("courses/{id}/marks/{studentId}")]
-    public async Task<IActionResult> EditStudentMark(string id, string studentId, CourseStudentEditMarkRequest input)
+    public async Task<IActionResult> EditStudentMark(Guid id, Guid studentId, CourseStudentEditMarkRequest input)
     {
-        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name));
+        await EnsureAdminOrTeacherRights(id.ToString(), GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.EditStudentMark(id, studentId, input));
     }
     
     [Authorize]
     [HttpPost("courses/{id}/notifications")]
-    public async Task<IActionResult> CreateNotification(string id, NotificationCreateRequest input)
+    public async Task<IActionResult> CreateNotification(Guid id, NotificationCreateRequest input)
     {
-        await EnsureAdminOrTeacherRights(id, GetUserData(ClaimTypes.Name));
-        return Ok(await _courseService.CreateNewNotification(id, input));
+        await EnsureAdminOrTeacherRights(id.ToString(), GetUserData(ClaimTypes.Name));
+        return Ok(await _courseService.CreateNewNotification(id.ToString(), input));
     }
 
     [Authorize]
     [HttpPost("courses/{id}/teachers")]
-    public async Task<IActionResult> AddTeacherToCourse(string id, CourseAddTeacherRequest userId)
+    public async Task<IActionResult> AddTeacherToCourse(Guid id, CourseAddTeacherRequest userId)
     {
-        await EnsureMainRights(id, GetUserData(ClaimTypes.Name));
-        return Ok(await _courseService.AddTeacherToCourse(id, userId));
+        await EnsureMainRights(id.ToString(), GetUserData(ClaimTypes.Name));
+        return Ok(await _courseService.AddTeacherToCourse(id.ToString(), userId));
     }
     
     [Authorize]
     [HttpGet("courses/{id}/details")]
-    public async Task<IActionResult> GetDetailedInfo(string id)
+    public async Task<IActionResult> GetDetailedInfo(Guid id)
     {
-        return Ok(await _courseService.GetCourseDetailedInfo(id, GetUserData(ClaimTypes.Name)));
+        return Ok(await _courseService.GetCourseDetailedInfo(id.ToString(), GetUserData(ClaimTypes.Name)));
     }
 
     [Authorize]

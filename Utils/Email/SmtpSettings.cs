@@ -1,4 +1,4 @@
-namespace repassAPI.Utils;
+namespace repassAPI.Utils.Email;
 
 public class SmtpSettings
 {

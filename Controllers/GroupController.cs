@@ -33,24 +33,24 @@ public class GroupController: BaseController
     
     [Authorize]
     [HttpPut("groups/{id}")]
-    public async Task<IActionResult> EditGroup(string id, CampusGroupEditRequest input)
+    public async Task<IActionResult> EditGroup(Guid id, CampusGroupEditRequest input)
     {
         await EnsureAdminRights(GetUserData(ClaimTypes.Name));
-        return Ok(await _groupService.Edit(id, input));
+        return Ok(await _groupService.Edit(id.ToString(), input));
     }
     
     [Authorize]
     [HttpDelete("groups/{id}")]
-    public async Task<IActionResult> DeleteGroup(string id)
+    public async Task<IActionResult> DeleteGroup(Guid id)
     {
         await EnsureAdminRights(GetUserData(ClaimTypes.Name));
-        return Ok(await _groupService.Delete(id));
+        return Ok(await _groupService.Delete(id.ToString()));
     }
     
     [Authorize]
     [HttpGet("groups/{id}")]
-    public async Task<IActionResult> GetCourses(string id)
+    public async Task<IActionResult> GetCourses(Guid id)
     {
-        return Ok(await _groupService.GetCourses(id));
+        return Ok(await _groupService.GetCourses(id.ToString()));
     }
 }

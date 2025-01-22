@@ -8,8 +8,8 @@ public interface ICourseService
 {
     //admin
     public Task<CoursePreviewResponse> CreateCourse(Guid groupId, CourseCreateRequest request);
-    public Task<CourseDetailedResponse> EditCourse(string courseId, CourseEditRequest request);
-    public Task<CoursePreviewResponse> DeleteCourse(string id);
+    public Task<CourseDetailedResponse> EditCourse(Guid courseId, CourseEditRequest request);
+    public Task<CoursePreviewResponse> DeleteCourse(Guid id);
     
     //admin, main teacher
     public Task<CourseDetailedResponse> AddTeacherToCourse(string courseId, CourseAddTeacherRequest request);
@@ -18,12 +18,12 @@ public interface ICourseService
     public Task<CourseDetailedResponse> CreateNewNotification(string courseId,
         NotificationCreateRequest notificationCreateRequest);
 
-    public Task<CourseDetailedResponse> EditCourseStatus(string courseId, CourseEditStatusRequest request);
-    public Task<CourseDetailedResponse> EditCourseReqAndAnnotations(string courseId,
+    public Task<CourseDetailedResponse> EditCourseStatus(Guid courseId, CourseEditStatusRequest request);
+    public Task<CourseDetailedResponse> EditCourseReqAndAnnotations(Guid courseId,
         CourseEditReqAndAnnotationsRequest request);
-    public Task<CourseDetailedResponse> EditStudentMark(string courseId, string studentId,
+    public Task<CourseDetailedResponse> EditStudentMark(Guid courseId, Guid studentId,
         CourseStudentEditMarkRequest editMarkRequest);
-    public Task<CourseDetailedResponse> EditStudentStatus(string courseId, string studentId,
+    public Task<CourseDetailedResponse> EditStudentStatus(Guid courseId, Guid studentId,
         CourseStudentEditStatusRequest editStatusRequest);
 
     

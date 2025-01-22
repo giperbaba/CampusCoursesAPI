@@ -39,9 +39,9 @@ public class CourseService: ICourseService
         return courseResponse;
     }
 
-    public async Task<CourseDetailedResponse> EditCourse(string courseId, CourseEditRequest request)
+    public async Task<CourseDetailedResponse> EditCourse(Guid courseId, CourseEditRequest request)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(courseId);
 
         if (course.Students.Count > request.MaxStudentsCount)
         {
@@ -51,12 +51,12 @@ public class CourseService: ICourseService
         Edit(course, request);
         await _context.SaveChangesAsync();
         
-        return await GetCourseDetailedInfo(courseId, null);
+        return await GetCourseDetailedInfo(courseId.ToString(), null);
     }
     
-    public async Task<CoursePreviewResponse> DeleteCourse(string id)
+    public async Task<CoursePreviewResponse> DeleteCourse(Guid id)
     {
-        var course = GetCourseById(Guid.Parse(id));
+        var course = GetCourseById(id);
         
         var courseTeachers = _context.CourseTeachers.Where(ct => ct.CourseId == course.Id).ToList();
         _context.CourseTeachers.RemoveRange(courseTeachers);
@@ -84,9 +84,9 @@ public class CourseService: ICourseService
     
     
     //admin, teacher
-    public async Task<CourseDetailedResponse> EditCourseStatus(string courseId, CourseEditStatusRequest status)
+    public async Task<CourseDetailedResponse> EditCourseStatus(Guid courseId, CourseEditStatusRequest status)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(courseId);
 
         if ((int)status.status < (int)course.Status)
         {
@@ -97,20 +97,20 @@ public class CourseService: ICourseService
         _context.Courses.Update(course); 
         await _context.SaveChangesAsync();
         
-        return await GetCourseDetailedInfo(courseId, null);
+        return await GetCourseDetailedInfo(courseId.ToString(), null);
     }
 
-    public async Task<CourseDetailedResponse> EditCourseReqAndAnnotations(string courseId,
+    public async Task<CourseDetailedResponse> EditCourseReqAndAnnotations(Guid courseId,
         CourseEditReqAndAnnotationsRequest request)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(courseId);
         
         course.Requirements = request.Requirements;
         course.Annotations = request.Annotations;
         _context.Courses.Update(course); 
         await _context.SaveChangesAsync();
 
-        return await GetCourseDetailedInfo(courseId, null);
+        return await GetCourseDetailedInfo(courseId.ToString(), null);
     }
     
     public async Task<CourseDetailedResponse> CreateNewNotification(string courseId,
@@ -133,21 +133,21 @@ public class CourseService: ICourseService
 
 
 
-    public async Task<CourseDetailedResponse> EditStudentStatus(string courseId, string studentId,
+    public async Task<CourseDetailedResponse> EditStudentStatus(Guid courseId, Guid studentId,
         CourseStudentEditStatusRequest editStatusRequest)
     {
-        await CheckIsUserExist(Guid.Parse(studentId));
+        await CheckIsUserExist(studentId);
     
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(courseId);
 
         if (course.MaxStudentsCount == course.StudentsEnrolledCount && editStatusRequest.Status == StudentStatus.Accepted)
         {
             throw new ConflictException(ErrorMessages.ConflictCourseRemainingSlots);
         }
         
-        await CheckIsStudentInQueue(studentId, courseId);
+        await CheckIsStudentInQueue(studentId.ToString(), courseId.ToString());
         
-        var student = course.Students.FirstOrDefault(s => s.StudentId.ToString().ToLower() == studentId.ToLower());
+        var student = course.Students.FirstOrDefault(s => s.StudentId == studentId);
     
         if (student == null)
         {
@@ -161,19 +161,19 @@ public class CourseService: ICourseService
         _context.CourseStudents.Update(student);
         await _context.SaveChangesAsync();
 
-        return await GetCourseDetailedInfo(courseId, null!);
+        return await GetCourseDetailedInfo(courseId.ToString(), null!);
     }
 
     
     
-    public async Task<CourseDetailedResponse> EditStudentMark(string courseId, string studentId,
+    public async Task<CourseDetailedResponse> EditStudentMark(Guid courseId, Guid studentId,
         CourseStudentEditMarkRequest editMarkRequest)
     {
-        await CheckIsUserExist(Guid.Parse(studentId));
+        await CheckIsUserExist(studentId);
     
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(courseId);
         
-        var student = course.Students.FirstOrDefault(s => s.StudentId.ToString().ToLower() == studentId.ToLower());
+        var student = course.Students.FirstOrDefault(s => s.StudentId == studentId);
         
         if (student == null)
         {
@@ -198,7 +198,7 @@ public class CourseService: ICourseService
         _context.CourseStudents.Update(student);
         await _context.SaveChangesAsync();
 
-        return await GetCourseDetailedInfo(courseId, null!);
+        return await GetCourseDetailedInfo(courseId.ToString(), null!);
     }
 
     
