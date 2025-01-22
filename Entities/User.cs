@@ -1,7 +1,6 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+
 
 namespace repassAPI.Entities;
 
@@ -29,7 +28,6 @@ public class User
     
     [Column("birth_date")]
     [Required]
-    [JsonConverter(typeof(DateTimeConverter))]
     public DateTime BirthDate { get; set; }
     
     [Column("email")]

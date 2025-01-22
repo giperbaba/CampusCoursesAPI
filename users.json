@@ -1,0 +1,30 @@
+[
+  {
+    "FullName": "admin4ik",
+    "BirthDate": "2000-01-21T04:03:04.505Z",
+    "Email": "admin@example.com",
+    "Password": "string1",
+    "IsAdmin": true
+  },
+  {
+    "FullName": "student",
+    "BirthDate": "2000-01-21T04:03:04.505Z",
+    "Email": "student@example.com",
+    "Password": "string1",
+    "IsAdmin": false
+  },
+  {
+    "FullName": "main teacher",
+    "BirthDate": "1980-01-21T04:03:04.505Z",
+    "Email": "main@example.com",
+    "Password": "string1",
+    "IsAdmin": false
+  },
+  {
+    "FullName": "teacher",
+    "BirthDate": "2000-01-21T04:03:04.505Z",
+    "Email": "teacher@example.com",
+    "Password": "string1",
+    "IsAdmin": false
+  }
+]

@@ -12,8 +12,8 @@ using repassAPI.Data;
 namespace repassAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250113082223_AddedNotification")]
-    partial class AddedNotification
+    [Migration("20250122125809_Retry")]
+    partial class Retry
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,6 +78,10 @@ namespace repassAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("group_id");
 
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("create_time");
+
                     b.Property<Guid?>("MainTeacherId")
                         .HasColumnType("uuid")
                         .HasColumnName("main_teacher_id");
@@ -131,23 +135,13 @@ namespace repassAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("course_id");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("student_email");
-
-                    b.Property<int>("FinalResult")
+                    b.Property<int?>("FinalResult")
                         .HasColumnType("integer")
                         .HasColumnName("final_result");
 
-                    b.Property<int>("MidtermResult")
+                    b.Property<int?>("MidtermResult")
                         .HasColumnType("integer")
                         .HasColumnName("midterm_result");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("student_name");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer")
@@ -177,19 +171,9 @@ namespace repassAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("course_id");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("student_email");
-
                     b.Property<bool>("IsMainTeacher")
                         .HasColumnType("boolean")
                         .HasColumnName("is_main_teacher");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("student_name");
 
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uuid")

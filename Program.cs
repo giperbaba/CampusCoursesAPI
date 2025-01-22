@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using repassAPI.Constants;
 using repassAPI.Data;
+using repassAPI.Entities;
 using repassAPI.Middleware;
 using repassAPI.Services.Impl;
 using repassAPI.Services.Interfaces;
@@ -79,6 +81,28 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    db.Database.Migrate();
+
+    if (!db.Users.Any())
+    {
+        var usersJson = File.ReadAllText("users.json");
+        var users = JsonSerializer.Deserialize<List<User>>(usersJson);
+
+        if (users != null)
+        {
+            foreach (var user in users)
+            {
+                user.Id = Guid.NewGuid();
+                db.Users.Add(user);
+            }
+            db.SaveChanges();
+        }
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {

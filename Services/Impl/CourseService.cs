@@ -321,7 +321,7 @@ public class CourseService: ICourseService
     private Course GetCourseById(Guid courseId, bool includeTeachers = false, bool includeStudents = false, bool includeNotifications = false)
     {
         var query = _context.Courses.AsQueryable();
-        
+
         if (includeTeachers)
         {
             query = query.Include(c => c.Teachers)
