@@ -41,7 +41,7 @@ public class CourseService: ICourseService
 
     public async Task<CourseDetailedResponse> EditCourse(Guid courseId, CourseEditRequest request)
     {
-        var course = GetCourseById(courseId);
+        var course = GetCourseById(courseId, includeStudents: true, includeTeachers: true, includeNotifications: true);
 
         if (course.Students.Count > request.MaxStudentsCount)
         {
@@ -86,7 +86,7 @@ public class CourseService: ICourseService
     //admin, teacher
     public async Task<CourseDetailedResponse> EditCourseStatus(Guid courseId, CourseEditStatusRequest status)
     {
-        var course = GetCourseById(courseId);
+        var course = GetCourseById(courseId, includeStudents: true, includeTeachers: true, includeNotifications: true);
 
         if ((int)status.status < (int)course.Status)
         {
@@ -103,7 +103,7 @@ public class CourseService: ICourseService
     public async Task<CourseDetailedResponse> EditCourseReqAndAnnotations(Guid courseId,
         CourseEditReqAndAnnotationsRequest request)
     {
-        var course = GetCourseById(courseId);
+        var course = GetCourseById(courseId, includeStudents: true, includeTeachers: true, includeNotifications: true);
         
         course.Requirements = request.Requirements;
         course.Annotations = request.Annotations;
@@ -116,7 +116,7 @@ public class CourseService: ICourseService
     public async Task<CourseDetailedResponse> CreateNewNotification(string courseId,
         NotificationCreateRequest notificationCreateRequest)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(Guid.Parse(courseId), includeStudents: true, includeTeachers: true, includeNotifications: true);
 
         if (course == null)
         {
@@ -138,7 +138,7 @@ public class CourseService: ICourseService
     {
         await CheckIsUserExist(studentId);
     
-        var course = GetCourseById(courseId);
+        var course = GetCourseById(courseId, includeStudents: true, includeTeachers: true, includeNotifications: true);
 
         if (course.MaxStudentsCount == course.StudentsEnrolledCount && editStatusRequest.Status == StudentStatus.Accepted)
         {
@@ -171,7 +171,7 @@ public class CourseService: ICourseService
     {
         await CheckIsUserExist(studentId);
     
-        var course = GetCourseById(courseId);
+        var course = GetCourseById(courseId, includeStudents: true, includeTeachers: true, includeNotifications: true);
         
         var student = course.Students.FirstOrDefault(s => s.StudentId == studentId);
         
@@ -205,7 +205,7 @@ public class CourseService: ICourseService
     //anybody
     public async Task<IResult> SignUp(string courseId, string userId)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(Guid.Parse(courseId), includeStudents: true);
         if (course.Status != CourseStatus.OpenForAssigning)
         {
             throw new BadRequestException(ErrorMessages.InvalidCourseStatusInRequest);
@@ -218,7 +218,8 @@ public class CourseService: ICourseService
     {
         var user = await _context.Users
             .Include(u => u.StudingCourses)
-            .ThenInclude(sc => sc.Course) 
+            .ThenInclude(sc => sc.Course)
+            .ThenInclude(c => c.Students)
             .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
         var courses = user.StudingCourses;
 
@@ -235,7 +236,8 @@ public class CourseService: ICourseService
     {
         var user = await _context.Users
             .Include(u => u.TeachingCourses) 
-            .ThenInclude(tc => tc.Course) 
+            .ThenInclude(tc => tc.Course)
+            .ThenInclude(c => c.Students)
             .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
         
         var courses = user.TeachingCourses;
@@ -251,7 +253,7 @@ public class CourseService: ICourseService
     
     public async Task<CourseDetailedResponse> GetCourseDetailedInfo(string courseId, string? userId)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(Guid.Parse(courseId), includeStudents: true, includeTeachers: true, includeNotifications: true);
     
         IList<CourseStudentResponse> students = GetStudentsList(course, userId);
         IList<CourseTeacherResponse> teachers = GetTeachersList(course);
@@ -305,33 +307,48 @@ public class CourseService: ICourseService
     //check
     public bool IsUserMainTeacher(string courseId, string userId)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(Guid.Parse(courseId), includeTeachers: true);
         return course.MainTeacherId == Guid.Parse(userId);
     }
 
     public bool IsUserTeacher(string courseId, string userId)
     {
-        var course = GetCourseById(Guid.Parse(courseId));
+        var course = GetCourseById(Guid.Parse(courseId), includeTeachers: true);
         return course.Teachers.Any(teacher => teacher.TeacherId.ToString() == userId);
     }
     
     //private
-    private Course GetCourseById(Guid courseId)
+    private Course GetCourseById(Guid courseId, bool includeTeachers = false, bool includeStudents = false, bool includeNotifications = false)
     {
-        var course = _context.Courses
-            .Include(c => c.Teachers) 
-            .ThenInclude(ct => ct.Teacher)
-            .Include(c => c.Students) 
-            .ThenInclude(ct => ct.Student)
-            .Include(c => c.Notifications) 
-            .FirstOrDefault(c => c.Id == courseId);
-    
+        var query = _context.Courses.AsQueryable();
+        
+        if (includeTeachers)
+        {
+            query = query.Include(c => c.Teachers)
+                .ThenInclude(ct => ct.Teacher);
+        }
+
+        if (includeStudents)
+        {
+            query = query.Include(c => c.Students)
+                .ThenInclude(cs => cs.Student);
+        }
+
+        if (includeNotifications)
+        {
+            query = query.Include(c => c.Notifications);
+        }
+
+        var course = query.FirstOrDefault(c => c.Id == courseId);
+
         if (course == null)
         {
             throw new NotFoundException(ErrorMessages.CourseNotFound);
         }
+
         return course;
     }
+    
     private async Task AddTeacher(Guid courseId, Guid teacherId, bool isMainTeacher)
     {
         await CheckIsCourseExist(courseId);
