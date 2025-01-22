@@ -7,7 +7,7 @@ namespace repassAPI.Services.Interfaces;
 public interface ICourseService
 {
     //admin
-    public Task<CoursePreviewResponse> CreateCourse(string groupId, CourseCreateRequest request);
+    public Task<CoursePreviewResponse> CreateCourse(Guid groupId, CourseCreateRequest request);
     public Task<CourseDetailedResponse> EditCourse(string courseId, CourseEditRequest request);
     public Task<CoursePreviewResponse> DeleteCourse(string id);
     

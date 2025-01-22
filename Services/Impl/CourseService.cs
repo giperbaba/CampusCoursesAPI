@@ -24,11 +24,11 @@ public class CourseService: ICourseService
     }
 
     //admin
-    public async Task<CoursePreviewResponse> CreateCourse(string groupId, CourseCreateRequest courseCreate)
+    public async Task<CoursePreviewResponse> CreateCourse(Guid groupId, CourseCreateRequest courseCreate)
     {
         await CheckIsUserExist(courseCreate.MainTeacherId);
 
-        var course = Mapper.MapCourseFromCreateModelToEntity(Guid.Parse(groupId), courseCreate, courseCreate.MaxStudentsCount, CourseStatus.Created, courseCreate.MainTeacherId);
+        var course = Mapper.MapCourseFromCreateModelToEntity(groupId, courseCreate, courseCreate.MaxStudentsCount, CourseStatus.Created, courseCreate.MainTeacherId);
         
         await _context.Courses.AddAsync(course);
         await _context.SaveChangesAsync();
@@ -78,7 +78,7 @@ public class CourseService: ICourseService
     //admin, main teacher
     public async Task<CourseDetailedResponse> AddTeacherToCourse(string courseId, CourseAddTeacherRequest request)
     {
-        await AddTeacher(Guid.Parse(courseId), Guid.Parse(request.userId.ToString()), false);
+        await AddTeacher(Guid.Parse(courseId), request.userId, false);
         return await GetCourseDetailedInfo(courseId, null);
     }
     
@@ -174,9 +174,15 @@ public class CourseService: ICourseService
         var course = GetCourseById(Guid.Parse(courseId));
         
         var student = course.Students.FirstOrDefault(s => s.StudentId.ToString().ToLower() == studentId.ToLower());
+        
         if (student == null)
         {
             throw new NotFoundException(ErrorMessages.ConflictStudentIsNotInTheCourse);
+        }
+
+        if (student.Status != StudentStatus.Accepted)
+        {
+            throw new BadRequestException(ErrorMessages.IncorrectStudentStatus);
         }
 
         if (editMarkRequest.MarkType == MarkType.Final)

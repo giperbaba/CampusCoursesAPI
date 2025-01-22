@@ -19,7 +19,7 @@ public class CourseController: BaseController
 
     [Authorize]
     [HttpPost("groups/{groupId}")]
-    public async Task<IActionResult> CreateCourse(string groupId, CourseCreateRequest input)
+    public async Task<IActionResult> CreateCourse(Guid groupId, CourseCreateRequest input)
     {
         await EnsureAdminRights(GetUserData(ClaimTypes.Name));
         return Ok(await _courseService.CreateCourse(groupId, input));

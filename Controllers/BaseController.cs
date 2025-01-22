@@ -6,14 +6,14 @@ namespace repassAPI.Controllers;
 
 public class BaseController : ControllerBase
 {
-    private readonly Lazy<IAccountService> _accountService;
-    private readonly Lazy<ICourseService> _courseService;
+    private readonly Lazy<IAccountService?> _accountService;
+    private readonly Lazy<ICourseService?> _courseService;
 
     protected BaseController(IServiceProvider serviceProvider)
     {
         //Lazy для отложенной загрузки зависимости, тк account service нужен в базовом, но не нужен в контроллерах, которые наследуются от базового
-        _accountService = new Lazy<IAccountService>(() => serviceProvider.GetService<IAccountService>());
-        _courseService = new Lazy<ICourseService>(() => serviceProvider.GetService<ICourseService>());
+        _accountService = new Lazy<IAccountService?>(serviceProvider.GetService<IAccountService>);
+        _courseService = new Lazy<ICourseService?>(serviceProvider.GetService<ICourseService>);
     }
 
     protected async Task EnsureAdminRights(string id)
@@ -63,7 +63,7 @@ public class BaseController : ControllerBase
             throw new UnauthorizedAccessException("Authorization token is missing or invalid.");
         }
 
-        var token = authorizationHeader.Substring("Bearer ".Length); //TODO: чо такое сабстринг
+        var token = authorizationHeader.Substring("Bearer ".Length);
         return token;
     }
 }

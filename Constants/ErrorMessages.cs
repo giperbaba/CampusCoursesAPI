@@ -29,7 +29,8 @@ public static class ErrorMessages
     public const string StudentNotInQueue = "This student is not in queue. Their status cannot be changed";
 
     public const string InvalidPageCountOrPageSize = "Page count and page size must be greater than 0";
-    
+
+    public const string IncorrectStudentStatus = "Student must be accepted to change his marks";
     //Login failed errors
     public const string ConflictEmail = "Email is already registered";
     public const string InvalidPassword = "Invalid password";
@@ -46,6 +47,8 @@ public static class ErrorMessages
     public const string AccessDenied = "You must be admin";
     public const string AccessDeniedAdminMainTeacher = "You must be admin or main teacher";
     public const string AccessDeniedAdminTeacher = "You must be admin or teacher";
+    
+    
     //Success
     public const string Logout = "Logged Out";
     
