@@ -86,7 +86,7 @@ public class CourseNotificationJob : IJob
                 }
                 catch (BrokenCircuitException)
                 {
-                    Console.WriteLine($"Пропуск отправки письма на {student.Email}");
+                    Console.WriteLine($"Письмо на {student.Email} не отправлено");
                 }
                 catch (Exception ex)
                 {

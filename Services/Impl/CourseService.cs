@@ -155,8 +155,16 @@ public class CourseService: ICourseService
         }
         
         student.Status = editStatusRequest.Status;
-        student.MidtermResult = StudentMark.NotDefined;
-        student.FinalResult = StudentMark.NotDefined;
+        if (editStatusRequest.Status == StudentStatus.Accepted)
+        {
+            student.MidtermResult = StudentMark.NotDefined;
+            student.FinalResult = StudentMark.NotDefined;
+        }
+        else 
+        {
+            student.MidtermResult = null;
+            student.FinalResult = null;
+        }
         
         _context.CourseStudents.Update(student);
         await _context.SaveChangesAsync();
@@ -282,7 +290,7 @@ public class CourseService: ICourseService
 
         if (hasPlacesAndOpen == true)
         {
-            query = query.Where(course => course.RemainingSlotsCount > 0 && course.Status == CourseStatus.OpenForAssigning);
+            query = query.Where(course => course.Students.Count < course.MaxStudentsCount && course.Status == CourseStatus.OpenForAssigning);
         }
 
         if (semester.HasValue)
@@ -484,7 +492,7 @@ public class CourseService: ICourseService
             // если админ учитель или этот ученик то показываем резы
             if (userId == null || 
                 studentEntity.Id.ToString() == userId || 
-                (_accountService.IsUserAdmin(userId) && studentEntity.Status != StudentStatus.Declined)  || 
+                _accountService.IsUserAdmin(userId)  || 
                 IsUserTeacher(course.Id.ToString(), userId))
             {
                 students.Add(Mapper.MapStudentEntityToStudentModelWithResults(studentEntity));
