@@ -170,3 +170,6 @@
 /Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/users.json
 /Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/Polly.dll
 /Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/Polly.Core.dll
+/Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/courses.json
+/Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/groups.json
+/Users/giperbaba/RiderProjects/repassAPI/repassAPI/bin/Debug/net8.0/teachers.json

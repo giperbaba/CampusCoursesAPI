@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("repassAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f294b4fb1acf8d50e0d43fe3bef7a79df8e9bdb9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f3359982c75bf1e30c06fe2085252368c4621d4")]
 [assembly: System.Reflection.AssemblyProductAttribute("repassAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("repassAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

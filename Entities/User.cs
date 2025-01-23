@@ -38,7 +38,7 @@ public class User
     [Column("password")]
     [Required]
     [StringLength(255, ErrorMessage = Constants.ErrorMessages.IncorrectPasswordFormat, MinimumLength = 6)]
-    public string Password { get; init; }
+    public string Password { get; set; }
     
     [Column("is_admin")]
     [Required]

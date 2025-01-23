@@ -35,7 +35,7 @@ public static class Mapper
     public static Course MapCourseFromCreateModelToEntity(Guid groupId, CourseCreateRequest courseRequest, int remainingSlots, CourseStatus courseStatus, Guid mainTeacherId)
     {
         return new Course(courseRequest.Name, courseRequest.StartYear, courseRequest.MaxStudentsCount,
-            remainingSlots, courseStatus, courseRequest.Semester, courseRequest.Requirements, courseRequest.Annotations, DateTime.Now.ToUniversalTime(), groupId, mainTeacherId);
+            remainingSlots, courseStatus, courseRequest.Semester, courseRequest.Requirements, courseRequest.Annotations, DateTime.UtcNow, groupId, mainTeacherId);
     }
 
     public static CoursePreviewResponse MapCourseEntityToCoursePreviewModel(Course courseEntity)

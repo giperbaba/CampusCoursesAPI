@@ -1,0 +1,14 @@
+[
+  {
+    "Name": "health",
+    "StartYear": 2025,
+    "MaxStudentsCount": 2,
+    "RemainingSlotsCount": 2,
+    "Status": "OpenForAssigning",
+    "Semester": "Spring",
+    "Requirements": "requirements",
+    "Annotations": "annotations",
+    "CampusGroupId": "1bde3f29-4b2f-4f7e-9e8a-abb6a9736b57",
+    "MainTeacherId": null
+  }
+]

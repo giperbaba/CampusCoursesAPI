@@ -7,6 +7,7 @@ public class DatabaseContext: DbContext
 {
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
+        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
     
@@ -53,6 +54,5 @@ public class DatabaseContext: DbContext
     public DbSet<CourseStudent> CourseStudents { get; init; } = null!;
     public DbSet<CourseTeacher> CourseTeachers { get; init; } = null!;
     public DbSet<UserRoles> UserRoles { get; set; } = null!;
-
     public DbSet<Notification> Notifications { get; set; } = null!;
 }

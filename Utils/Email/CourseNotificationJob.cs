@@ -39,7 +39,7 @@ public class CourseNotificationJob : IJob
             .ThenInclude(cs => cs.Student)
             .Where(c =>
                 (c.Semester == Semester.Spring && currentDate == new DateTime(currentDate.Year, 2, 28)) || 
-                (c.Semester == Semester.Autumn && currentDate == DateTime.UtcNow.Date)) 
+                (c.Semester == Semester.Autumn && currentDate == new DateTime(currentDate.Year, 8, 31))) 
             .ToListAsync();
 
         foreach (var course in upcomingCourses)

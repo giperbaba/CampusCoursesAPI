@@ -59,7 +59,8 @@ public class Course(
     [Column("main_teacher_id")]
     public Guid? MainTeacherId { get; set; } = mainTeacherId;
     
-    [Column("create_time")] public DateTime CreateTime { get; set; } = createTime;
+    [Column("create_time")] 
+    public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 
     //навигационные свойства 
     [ForeignKey("CampusGroupId")]

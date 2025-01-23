@@ -106,6 +106,7 @@ public class AccountService: IAccountService
         var user = GetUserByEmail(email);
         IsAgeCorrect(userEdit.BirthDate);
         Edit(user, userEdit);
+        await _context.SaveChangesAsync();
         var userProfile = Mapper.MapUserEntityToUserProfileModel(user);
         return userProfile;
     }
@@ -136,11 +137,10 @@ public class AccountService: IAccountService
         return user;
     }
 
-    private async void Edit(User user, UserEditProfileRequest userEdit)
+    private void Edit(User user, UserEditProfileRequest userEdit)
     {
         user.FullName = userEdit.FullName;
         user.BirthDate = userEdit.BirthDate;
-        await _context.SaveChangesAsync();
     }
     
     private void RemoveRefreshTokenIfInvalid(User user, RefreshRequest request)

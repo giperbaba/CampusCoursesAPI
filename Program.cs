@@ -1,12 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using repassAPI.Constants;
 using repassAPI.Data;
-using repassAPI.Entities;
 using repassAPI.Middleware;
 using repassAPI.Services.Impl;
 using repassAPI.Services.Interfaces;
@@ -31,7 +29,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Please enter token"
     });
 
-    options.OperationFilter<CustomSecurityRequirementsFilter>();
+    options.OperationFilter<SecurityRequirementsFilter>();
 });
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
@@ -51,7 +49,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(autumnJobKey)
         .WithIdentity("AutumnCourseNotification-trigger")
-        .WithCronSchedule("0/15 * * * * ?")); //31 августа 12:00
+        .WithCronSchedule("0 0 12 31 8 ?")); //31 августа 12:00
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
@@ -84,23 +82,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-    db.Database.Migrate();
+    //db.Database.Migrate();
 
-    if (!db.Users.Any())
-    {
-        var usersJson = File.ReadAllText("users.json");
-        var users = JsonSerializer.Deserialize<List<User>>(usersJson);
-
-        if (users != null)
-        {
-            foreach (var user in users)
-            {
-                user.Id = Guid.NewGuid();
-                db.Users.Add(user);
-            }
-            db.SaveChanges();
-        }
-    }
+    DatabaseSeeder.SeedDatabase(db);
 }
 
 if (app.Environment.IsDevelopment())
