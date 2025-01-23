@@ -484,13 +484,13 @@ public class CourseService: ICourseService
             // если админ учитель или этот ученик то показываем резы
             if (userId == null || 
                 studentEntity.Id.ToString() == userId || 
-                _accountService.IsUserAdmin(userId) || 
+                (_accountService.IsUserAdmin(userId) && studentEntity.Status != StudentStatus.Declined)  || 
                 IsUserTeacher(course.Id.ToString(), userId))
             {
                 students.Add(Mapper.MapStudentEntityToStudentModelWithResults(studentEntity));
             }
             // в других случ не показываем
-            else if (studentEntity.Status == StudentStatus.Accepted)
+            else if (studentEntity.Status == StudentStatus.Accepted || studentEntity.Status == StudentStatus.Declined )
             {
                 students.Add(Mapper.MapStudentEntityToStudentModelWithoutResults(studentEntity));
             }
