@@ -51,9 +51,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(autumnJobKey)
         .WithIdentity("AutumnCourseNotification-trigger")
-        .WithCronSchedule("0 0 12 31 8 ?")); //31 августа 12:00
-    
-    q.AddJobListener<RetryJobListener>();
+        .WithCronSchedule("0/15 * * * * ?")); //31 августа 12:00
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
@@ -82,6 +80,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 
 var app = builder.Build();
 
+//seeding 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();

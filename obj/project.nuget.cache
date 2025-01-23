@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6qxfqx91sSv69RT3CYi8q+JH4bZ7iLjtp1Tv8pkGJ3mYB22hR8Jf26207JeXt25KTz8qMIBX3Y3MObKCTzxlJg==",
+  "dgSpecHash": "sTvEXvTUwZHc4hUPiAuVAvhsns6C14hm8FDjxAC94H1DNV0nT7YsCFzXAFYnnaOlu1CcdHTHxdmQ23f2yeGzjw==",
   "success": true,
   "projectFilePath": "/Users/giperbaba/RiderProjects/repassAPI/repassAPI/repassAPI.csproj",
   "expectedPackageFiles": [
@@ -51,6 +51,8 @@
     "/Users/giperbaba/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/npgsql/9.0.2/npgsql.9.0.2.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/npgsql.entityframeworkcore.postgresql/9.0.2/npgsql.entityframeworkcore.postgresql.9.0.2.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/polly/8.5.1/polly.8.5.1.nupkg.sha512",
+    "/Users/giperbaba/.nuget/packages/polly.core/8.5.1/polly.core.8.5.1.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/quartz/3.13.1/quartz.3.13.1.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/quartz.extensions.dependencyinjection/3.13.1/quartz.extensions.dependencyinjection.3.13.1.nupkg.sha512",
     "/Users/giperbaba/.nuget/packages/quartz.extensions.hosting/3.13.1/quartz.extensions.hosting.3.13.1.nupkg.sha512",
